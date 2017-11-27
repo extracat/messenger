@@ -8,14 +8,8 @@ var jsonParser = bodyParser.json();
 app.set('port', (process.env.PORT || 80));
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', function(request, response) {
-  response.send('Hello World!');
-})
 
 
-
-
-/*
 // получение списка данных
 app.get("/api/users", function(req, res){
       
@@ -124,7 +118,7 @@ app.put("/api/users", jsonParser, function(req, res){
         res.status(404).send(user);
     }
 });
-*/
+
   
 app.listen(app.get('port'), function() {
   console.log("Node app is running at localhost:" + app.get('port'))
