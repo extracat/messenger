@@ -6,6 +6,8 @@ var app = express();
 var jsonParser = bodyParser.json();
  
 app.use(express.static(__dirname + "/public"));
+
+/*
 // получение списка данных
 app.get("/api/users", function(req, res){
       
@@ -114,6 +116,7 @@ app.put("/api/users", jsonParser, function(req, res){
         res.status(404).send(user);
     }
 });
+*/
   
 app.listen(80, function(){
     console.log("Сервер ожидает подключения...");
