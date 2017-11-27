@@ -4,8 +4,16 @@ var fs = require("fs");
  
 var app = express();
 var jsonParser = bodyParser.json();
- 
-app.use(express.static(__dirname + "/public"));
+
+app.set('port', (process.env.PORT || 80));
+app.use(express.static(__dirname + '/public'));
+
+app.get('/', function(request, response) {
+  response.send('Hello World!');
+})
+
+
+
 
 /*
 // получение списка данных
@@ -118,6 +126,6 @@ app.put("/api/users", jsonParser, function(req, res){
 });
 */
   
-app.listen(80, function(){
-    console.log("Сервер ожидает подключения...");
+app.listen(app.get('port'), function() {
+  console.log("Node app is running at localhost:" + app.get('port'))
 });
