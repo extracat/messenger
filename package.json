@@ -1,5 +1,5 @@
 {
-  "name": "webapp",
+  "name": "messenger",
   "version": "1.0.0",
   "description": "A sample Node.js app using Express 4",
   "main": "app.js",
