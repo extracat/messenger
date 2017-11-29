@@ -9,7 +9,7 @@ var app = express();
 var jsonParser = bodyParser.json();
 
 var portNum = 80;
-if(hostname == "snezhi-home.local") portNum = 8080
+if(hostname == "snezhi-home.local" || hostname == "MBP-Sabina.Dlink") portNum = 8080
 
 app.set('port', (process.env.PORT || portNum));
 app.use(express.static(__dirname + '/public'));
