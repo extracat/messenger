@@ -1,3 +1,6 @@
+var os = require("os");
+var hostname = os.hostname();
+
 var express = require("express");
 var bodyParser = require("body-parser");
 var fs = require("fs");
@@ -5,7 +8,10 @@ var fs = require("fs");
 var app = express();
 var jsonParser = bodyParser.json();
 
-app.set('port', (process.env.PORT || 80));
+var portNum = 80;
+if(hostname == "snezhi-home.local") portNum = 8080
+
+app.set('port', (process.env.PORT || portNum));
 app.use(express.static(__dirname + '/public'));
 
 
@@ -121,5 +127,5 @@ app.put("/api/users", jsonParser, function(req, res){
 
   
 app.listen(app.get('port'), function() {
-  console.log("Node app is running at localhost:" + app.get('port'))
+  console.log("Node app is running at "+hostname+":" + app.get('port'))
 });
