@@ -7,7 +7,21 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "express": "^4.14.0",
     "body-parser": "^1.16.0",
+<<<<<<< HEAD
+    "morgan": "latest",
+    "mongoose": "latest",
+    "jsonwebtoken": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/extracat/messenger-node-api"
+  },
+  "license": "MIT"
+=======
     "express": "^4.14.0"
   }
+  
+>>>>>>> parent of 44ae048... update
 }

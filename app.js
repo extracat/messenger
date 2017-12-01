@@ -1,131 +1,43 @@
-var os = require("os");
+const os = require("os");
+const fs = require("fs");
+
 var hostname = os.hostname();
-
-var express = require("express");
-var bodyParser = require("body-parser");
-var fs = require("fs");
- 
-var app = express();
-var jsonParser = bodyParser.json();
-
 var portNum = 80;
 if(hostname == "snezhi-home.local" || hostname == "MBP-Sabina.Dlink") portNum = 8080
 
-app.set('port', (process.env.PORT || portNum));
-app.use(express.static(__dirname + '/public'));
+
+
+const Koa = require('koa'); // ядро
+const Router = require('koa-router'); // маршрутизация
+const bodyParser = require('koa-bodyparser'); // парсер для POST запросов
+const serve = require('koa-static'); // модуль, который отдает статические файлы типа index.html из заданной директории
+const logger = require('koa-logger'); // опциональный модуль для логов сетевых запросов. Полезен при разработке.
+
+const app = new Koa();
+const router = new Router();
+app.use(serve('public'));
+app.use(logger());
+app.use(bodyParser());
+
+
+const passport = require('koa-passport'); //реализация passport для Koa
+const LocalStrategy = require('passport-local'); //локальная стратегия авторизации
+const JwtStrategy = require('passport-jwt').Strategy; // авторизация через JWT
+const ExtractJwt = require('passport-jwt').ExtractJwt; // авторизация через JWT
+
+app.use(passport.initialize()); // сначала passport
+app.use(router.routes()); // потом маршруты
+const server = app.listen(portNum);// запускаем сервер на порту portNum
 
 
 
-// получение списка данных
-app.get("/api/users", function(req, res){
-      
-    var content = fs.readFileSync("users.json", "utf8");
-    var users = JSON.parse(content);
-    res.send(users);
-});
-// получение одного пользователя по id
-app.get("/api/users/:id", function(req, res){
-      
-    var id = req.params.id; // получаем id
-    var content = fs.readFileSync("users.json", "utf8");
-    var users = JSON.parse(content);
-    var user = null;
-    // находим в массиве пользователя по id
-    for(var i=0; i<users.length; i++){
-        if(users[i].id==id){
-            user = users[i];
-            break;
-        }
-    }
-    // отправляем пользователя
-    if(user){
-        res.send(user);
-    }
-    else{
-        res.status(404).send();
-    }
-});
-// получение отправленных данных
-app.post("/api/users", jsonParser, function (req, res) {
-     
-    if(!req.body) return res.sendStatus(400);
-     
-    var userName = req.body.name;
-    var userAge = req.body.age;
-    var user = {name: userName, age: userAge};
-     
-    var data = fs.readFileSync("users.json", "utf8");
-    var users = JSON.parse(data);
-     
-    // находим максимальный id
-    var id = Math.max.apply(Math,users.map(function(o){return o.id;}))
-    // увеличиваем его на единицу
-    user.id = id+1;
-    // добавляем пользователя в массив
-    users.push(user);
-    var data = JSON.stringify(users);
-    // перезаписываем файл с новыми данными
-    fs.writeFileSync("users.json", data);
-    res.send(user);
-});
- // удаление пользователя по id
-app.delete("/api/users/:id", function(req, res){
-      
-    var id = req.params.id;
-    var data = fs.readFileSync("users.json", "utf8");
-    var users = JSON.parse(data);
-    var index = -1;
-    // находим индекс пользователя в массиве
-    for(var i=0; i<users.length; i++){
-        if(users[i].id==id){
-            index=i;
-            break;
-        }
-    }
-    if(index > -1){
-        // удаляем пользователя из массива по индексу
-        var user = users.splice(index, 1)[0];
-        var data = JSON.stringify(users);
-        fs.writeFileSync("users.json", data);
-        // отправляем удаленного пользователя
-        res.send(user);
-    }
-    else{
-        res.status(404).send();
-    }
-});
-// изменение пользователя
-app.put("/api/users", jsonParser, function(req, res){
-      
-    if(!req.body) return res.sendStatus(400);
-     
-    var userId = req.body.id;
-    var userName = req.body.name;
-    var userAge = req.body.age;
-     
-    var data = fs.readFileSync("users.json", "utf8");
-    var users = JSON.parse(data);
-    var user;
-    for(var i=0; i<users.length; i++){
-        if(users[i].id==userId){
-            user = users[i];
-            break;
-        }
-    }
-    // изменяем данные у пользователя
-    if(user){
-        user.age = userAge;
-        user.name = userName;
-        var data = JSON.stringify(users);
-        fs.writeFileSync("users.json", data);
-        res.send(user);
-    }
-    else{
-        res.status(404).send(user);
-    }
-});
 
-  
-app.listen(app.get('port'), function() {
-  console.log("Node app is running at "+hostname+":" + app.get('port'))
-});
+const jwtsecret = "mysecretkey"; // ключ для подписи JWT
+const jwt = require('jsonwebtoken'); // аутентификация по JWT для hhtp
+const socketioJwt = require('socketio-jwt'); // аутентификация по JWT для socket.io
+
+const socketIO = require('socket.io');
+
+
+const mongoose = require('mongoose'); // стандартная прослойка для работы с MongoDB
+const crypto = require('crypto'); // модуль node.js для выполнения различных шифровальных операций, в т.ч. для создания хэшей.
