@@ -2,12 +2,30 @@
   "name": "messenger",
   "version": "1.0.0",
   "description": "A sample Node.js app using Express 4",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node server.js"
   },
   "dependencies": {
-    "body-parser": "^1.16.0",
-    "express": "^4.14.0"
-  }
+    "express": "4.x",
+    "body-parser": "latest",
+    "morgan": "latest",
+    "mongoose": "latest",
+    "jsonwebtoken": "latest"
+  },
+  "engines": {
+    "node": "4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/extracat/messenger-node-api"
+  },
+  "keywords": [
+    "node"
+  ],
+  "author": "extracat",
+  "contributors": [
+    "extracat <mail@localhost> (http://localhost)"
+  ],
+  "license": "MIT"
 }
