@@ -13,8 +13,8 @@ var morgan      = require('morgan');
 var mongoose    = require('mongoose');
 
 var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
-var config = require('./config'); // get our config file
-var User   = require('./app/models/user'); // get our mongoose model
+//var config = require('./config'); // get our config file
+//var User   = require('./app/models/user'); // get our mongoose model
 
 
 
@@ -30,7 +30,7 @@ if( hostname == "snezhi-home.local"  ||
 } 
 
 var port = portNum; // process.env.PORT || portNum; // used to create, sign, and verify tokens
-mongoose.connect(config.database); // connect to database
+//mongoose.connect(config.database); // connect to database
 app.set('superSecret', config.secret); // secret variable
 
 
@@ -40,7 +40,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // use morgan to log requests to the console
-app.use(morgan('dev'));
+//app.use(morgan('dev'));
 
 // =======================
 // routes ================
