@@ -2,9 +2,9 @@
 // get the packages we need ============
 // =======================
 
-//var os = require("os")
-//var fs = require("fs")
-//var hostname = os.hostname()
+var os = require("os")
+var fs = require("fs")
+var hostname = os.hostname()
 
 var express     = require('express');
 var app         = express();
@@ -42,7 +42,7 @@ app.use(morgan('dev'));
 // =======================
 // basic route
 app.get('/', function(req, res) {
-    res.send('Hello! The API is at http://localhost:' + port + '/api');
+    res.send('Hello! The API is at https://' + hostname + '/api');
 });
 
 
@@ -148,8 +148,8 @@ app.use('/api', apiRoutes);
 app.get('/setup', function(req, res) {
 
   // create a sample user
-  var nick = new User({ 
-    name: 'Nick Cerminara', 
+  var user = new User({ 
+    name: 'user', 
     password: 'password',
     admin: true 
   });
