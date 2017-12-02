@@ -42,7 +42,7 @@ app.use(morgan('dev'));
 // =======================
 // basic route
 app.get('/', function(req, res) {
-    res.send('Hello! The API is at https://' + hostname + '/api');
+    res.send('Hello World! The API is at https://extracat-messenger-api.herokuapp.com/api');
 });
 
 
