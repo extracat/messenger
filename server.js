@@ -29,7 +29,7 @@ if( hostname == "snezhi-home.local"  ||
     portNum = 8080 
 } 
 
-var port = process.env.PORT || portNum; // used to create, sign, and verify tokens
+var port = portNum; // process.env.PORT || portNum; // used to create, sign, and verify tokens
 mongoose.connect(config.database); // connect to database
 app.set('superSecret', config.secret); // secret variable
 
