@@ -23,13 +23,8 @@ var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
 // =======================
 
 
-var portNum = 80;
-if( hostname == "snezhi-home.local"  || 
-    hostname == "MBP-Sabina.Dlink"   ) {
-    portNum = 8080 
-} 
+var port = process.env.PORT || 8080
 
-var port = portNum; // process.env.PORT || portNum; // used to create, sign, and verify tokens
 //mongoose.connect(config.database); // connect to database
 //app.set('superSecret', config.secret); // secret variable
 
