@@ -2,9 +2,9 @@
 // get the packages we need ============
 // =======================
 
-var os = require("os")
-var fs = require("fs")
-var hostname = os.hostname()
+//var os = require("os")
+//var fs = require("fs")
+//var hostname = os.hostname()
 
 var express     = require('express');
 var app         = express();
@@ -13,8 +13,8 @@ var morgan      = require('morgan');
 var mongoose    = require('mongoose');
 
 var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
-//var config = require('./config'); // get our config file
-//var User   = require('./app/models/user'); // get our mongoose model
+var config = require('./config'); // get our config file
+var User   = require('./app/models/user'); // get our mongoose model
 
 
 
@@ -25,8 +25,8 @@ var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
 var port = process.env.PORT || 8080
 
-//mongoose.connect(config.database); // connect to database
-//app.set('superSecret', config.secret); // secret variable
+mongoose.connect(config.database, {useMongoClient: true}); // connect to database
+app.set('superSecret', config.secret); // secret variable
 
 
 
@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // use morgan to log requests to the console
-//app.use(morgan('dev'));
+app.use(morgan('dev'));
 
 // =======================
 // routes ================
@@ -46,7 +46,6 @@ app.get('/', function(req, res) {
 });
 
 
-/*
 // API ROUTES -------------------
 
 // get an instance of the router for api routes
@@ -163,8 +162,6 @@ app.get('/setup', function(req, res) {
     res.json({ success: true });
   });
 });
-
-*/
 
 
 // =======================
