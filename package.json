@@ -9,12 +9,9 @@
   "dependencies": {
     "express": "^4.13.3",
     "body-parser": "latest",
-    "morgan": "^1.7.0",
-    "mongoose": "^4.5.5",
-    "jsonwebtoken": "^7.1.7"
-  },
-  "engines": {
-    "node": "4.0.0"
+    "morgan": "latest",
+    "mongoose": "latest",
+    "jsonwebtoken": "latest"
   },
   "repository": {
     "type": "git",
