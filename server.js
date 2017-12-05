@@ -2,27 +2,36 @@
 // get the packages we need 
 // =======================
 
-var os = require("os")
-var fs = require("fs")
-var hostname = os.hostname()
-
+var os          = require("os")
+var path        = require('path');
 var express     = require('express');
-var app         = express();
 var bodyParser  = require('body-parser');
 var morgan      = require('morgan');
 var mongoose    = require('mongoose');
+var jwt         = require('jsonwebtoken'); 
 
-var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
+
 var config = require('./config'); // get our config file
 var User   = require('./app/models/user'); // get our mongoose model
-
 
 
 // =======================
 // configuration 
 // =======================
 
-var port = process.env.PORT || 8080
+
+var express = require('express')
+var app = express()
+var server = require('http').createServer(app)
+var io = require('socket.io')(server)
+
+
+
+
+var hostname = os.hostname()
+var port = process.env.PORT || 3000
+
+
 mongoose.connect(config.database, {useMongoClient: true}); // connect to database
 app.set('superSecret', config.secret); // secret variable
 
@@ -36,14 +45,45 @@ app.use(morgan('dev'));
 
 
 // =======================
+// socket.io 
+// =======================
+
+//setup socket.io for our app
+
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
+
+io.on('connection', function(socket){
+
+  socket.on('chatMessage', function(from, msg){
+    io.emit('chatMessage', from, msg);
+  });
+
+  socket.on('notifyUser', function(user){
+    io.emit('notifyUser', user);
+  });
+  
+});
+
+
+
+// =======================
 // routes 
 // =======================
 
 
+
 // basic route
-app.get('/', function(req, res) {
-    res.send('Hello, World!');
-});
+//app.get('/', function(req, res) {
+//    res.send('Hello, World!');
+//});
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 
 // API ROUTES -------------------
@@ -326,8 +366,12 @@ app.get('/setup', function(req, res) {
 });
 
 
+
 // =======================
 // start the server ======
 // =======================
-app.listen(port);
+
+
+
+server.listen(port);
 console.log('Magic happens at http://localhost:' + port);
