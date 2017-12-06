@@ -20,10 +20,10 @@ var User   = require('./app/models/user'); // get our mongoose model
 // =======================
 
 
-var express = require('express')
 var app = express()
 var server = require('http').createServer(app)
 var io = require('socket.io')(server)
+var socketioJwt = require('socketio-jwt')
 
 
 
@@ -48,8 +48,17 @@ app.use(morgan('dev'));
 // socket.io 
 // =======================
 
-//setup socket.io for our app
 
+io.use(socketioJwt.authorize({
+  secret: 'supertonyhasasecret',
+  handshake: true
+}));
+/////////////////////////////// 
+ 
+io.on('connection', function (socket) {
+  // in socket.io 1.0 
+  console.log('hello! ', socket.decoded_token);
+})
 
 io.on('connection', function(socket){
   console.log('a user connected');
@@ -57,6 +66,7 @@ io.on('connection', function(socket){
     console.log('user disconnected');
   });
 });
+
 
 io.on('connection', function(socket){
 
@@ -73,7 +83,7 @@ io.on('connection', function(socket){
 
 
 // =======================
-// routes 
+// REST routes 
 // =======================
 
 
