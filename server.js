@@ -48,36 +48,39 @@ app.use(morgan('dev'));
 // socket.io 
 // =======================
 
+io.sockets
+  .on('connection', socketioJwt.authorize({
+    secret: 'supertonyhasasecret',
+    timeout: 15000 // 15 seconds to send the authentication message
+  })).on('authenticated', function(socket) {
 
-io.use(socketioJwt.authorize({
-  secret: 'supertonyhasasecret',
-  handshake: true
-}));
-/////////////////////////////// 
- 
-io.on('connection', function (socket) {
-  // in socket.io 1.0 
-  console.log('hello! ', socket.decoded_token);
-})
+    //=======================
+    //
+    //   this socket is authenticated, we are good to handle more events from it
+    //
+    //=======================
+
+    console.log('a user authenticated: ' + socket.decoded_token);
+
+
+    socket.on('chatMessage', function(from, msg){
+      io.emit('chatMessage', from, msg);
+    });
+
+    socket.on('notifyUser', function(user){
+      io.emit('notifyUser', user);
+    });
+
+    //=======================
+
+  });
+
 
 io.on('connection', function(socket){
   console.log('a user connected');
   socket.on('disconnect', function(){
     console.log('user disconnected');
-  });
-});
-
-
-io.on('connection', function(socket){
-
-  socket.on('chatMessage', function(from, msg){
-    io.emit('chatMessage', from, msg);
-  });
-
-  socket.on('notifyUser', function(user){
-    io.emit('notifyUser', user);
-  });
-  
+  }); 
 });
 
 
@@ -382,9 +385,8 @@ app.get('/setup', function(req, res) {
 app.get('/config', function(req, res) {
 
   res.json({ 
-    socket: 'https://extracat-messenger-api.herokuapp.com:' + port,
-    hostname: os.hostname(),
-    port: port
+    socket: 'https://extracat-messenger-api.herokuapp.com',
+    version: 1
   });
  
 });
@@ -396,4 +398,4 @@ app.get('/config', function(req, res) {
 
 
 server.listen(port);
-console.log('Magic happens at http://localhost:' + port);
+console.log('Server started');

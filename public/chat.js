@@ -1,38 +1,27 @@
-//var socket = io(); 
+var socket = io(); 
 
-var socket = io.connect('http://localhost:3000', {
-  'query': 'token=' + 'eyJhbGciOiJIUzI1NiJ9.NWEyODQ2OTM0NGU0ZjU1ZjA1MTkyOGEw.R1yQRA38ezvbbyGXHVtXqaHRH3pJFIjjOZTAzNWKxTA'
+socket.on('connect', function () {
+  $('#messages').append('<li>connected</li>');
+  socket.emit('authenticate', {token: 'eyJhbGciOiJIUzI1NiJ9.NWEyODQ2OTM0NGU0ZjU1ZjA1MTkyOGEw.R1yQRA38ezvbbyGXHVtXqaHRH3pJFIjjOZTAzNWKxTA'});
 });
 
- 
-
-  socket.on('authenticated', function () {
-      $('#messages').append('<li>authenticated!!!</li>');
-    });
+socket.on('authenticated', function () {
+  $('#messages').append('<li>authenticated</li>');
+});
     
+socket.on('unauthorized', function (msg) {
+  $('#messages').append('<li>authentication error: ' + msg.message + '</li>');
+});
 
-    
-            socket.on('unauthorized', function (data) {
-                $('#messages').append('Аутентикация не удалась ошибка: ' + data.message);
-            });
-
-            socket.on('disconnect', function () {
-                $('#messages').append('Соединение прервано');
-            });
-
-            socket.on('id', function (data) {
-                $('#messages').append(data);
-            });
-
-
+socket.on('disconnect', function () {
+  $('#messages').append('<li>disconnected/li>');
+});
 
 
 
 
 
 function submitfunction(){
-
-$('#messages').append(window.location.hostname);
 
   var from = $('#user').val();
   var message = $('#m').val();
