@@ -1,17 +1,48 @@
 <!doctype html>
-  <html>
-   <head>
+<html lang="en">
+  <head>
     <title>Chat Application</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
     <link rel='stylesheet' href='style.css' type='text/css'/>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="chat.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
   </head>
-  <body> 
-    <ul id="messages"></ul>
-    <span id="notifyUser"></span>
-    <form id="form" action="" onsubmit="return submitfunction();" > 
-      <input type="hidden" id="user" value="" /><input id="m" autocomplete="off" onkeyup="notifyTyping();" placeholder="Type yor message here.." /><input type="submit" id="button" value="Send"/> 
-    </form>
+  <body>
+    <div class="container">
+      <div class="row">
+          <div class="col-4" style="background-color: #fafafa">
+            <h2>Users</h2>
+            <ul id="users"></ul>
+          </div>
+          <div class="col-8"><h2>Conversation</h2>
+
+            <ul id="messages"></ul>
+            <span id="notifyUser"></span>
+
+              <form class="form-inline" style="width: 60%" id="form" action="" onsubmit="return submitfunction();">
+              <input type="hidden" id="user" value="" />
+                <div class="input-group col-12">
+                  <input type="text" class="form-control" style="width: 100%;" id="m" autocomplete="off" onkeyup="notifyTyping();" placeholder="Type yor message here.." />
+                  <span class="input-group-btn">
+                    <button class="btn btn-secondary" type="submit" id="button">Send</button>
+                  </span>
+                </div>
+
+
+              </form>
+
+           
+            
+            </div>
+
+      </div>
+    </div>
   </body>
 </html>

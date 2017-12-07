@@ -5,17 +5,25 @@ var Schema = mongoose.Schema;
 // set up a mongoose model and pass it using module.exports
 
 module.exports = mongoose.model('User', new Schema({ 
-	regDate: { type: Date, default: Date.now },
+    regDate: { type: Date, default: Date.now },
     username: {type: String, lowercase: true, unique: true},
     email: String,
     password: String
 }));
 
+
+module.exports = mongoose.model('Conversation', new Schema({ 
+    participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+}));
+
 module.exports = mongoose.model('Message', new Schema({ 
-	from: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
-    to: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
+	sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
+    recipient: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
     sentTime: { type: Date, default: Date.now }, 
     deliveredTime: Date,
     readTime: Date,
-    body: String
+    converstationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation' },
+    content: String
 }));
+
+

@@ -10,27 +10,20 @@ var morgan      = require('morgan');
 var mongoose    = require('mongoose');
 var jwt         = require('jsonwebtoken'); 
 
-
-var config = require('./config'); // get our config file
-var User   = require('./app/models/user'); // get our mongoose model
-
-
 // =======================
 // configuration 
 // =======================
 
+var config = require('./config'); // get our config file
+var User   = require('./app/models/user'); // get our mongoose model
 
 var app = express()
 var server = require('http').createServer(app)
 var io = require('socket.io')(server)
 var socketioJwt = require('socketio-jwt')
 
-
-
-
 var hostname = os.hostname()
 var port = process.env.PORT || 3000
-
 
 mongoose.connect(config.database, {useMongoClient: true}); // connect to database
 app.set('superSecret', config.secret); // secret variable
@@ -54,14 +47,11 @@ io.sockets
     timeout: 15000 // 15 seconds to send the authentication message
   })).on('authenticated', function(socket) {
 
-    //=======================
-    //
-    //   this socket is authenticated, we are good to handle more events from it
-    //
-    //=======================
+    // ==============================================
+    // this socket is authenticated, we are good to handle more events from it
+    // ==============================================
 
     console.log('a user authenticated: ' + socket.decoded_token);
-
 
     socket.on('chatMessage', function(from, msg){
       io.emit('chatMessage', from, msg);
@@ -71,8 +61,8 @@ io.sockets
       io.emit('notifyUser', user);
     });
 
-    //=======================
 
+    // ==============================================
   });
 
 
@@ -86,20 +76,12 @@ io.on('connection', function(socket){
 
 
 // =======================
-// REST routes 
+//      REST routes 
 // =======================
 
-
-
 // basic route
-//app.get('/', function(req, res) {
-//    res.send('Hello, World!');
-//});
+//app.get('/', function(req, res) {res.send('Hello, World!')});
 app.use(express.static(path.join(__dirname, 'public')));
-
-
-
-// API ROUTES -------------------
 
 // get an instance of the router for api routes
 var apiRoutes = express.Router(); 
@@ -124,9 +106,8 @@ apiRoutes.post('/authenticate', function(req, res) {
           // check if password matches
           if (user.password != req.body.password) {
             res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+
           } else {
-
-
             var token = jwt.sign(user.id, app.get('superSecret'));
             // if user is found and password is right
             // return the information including token as JSON
@@ -185,8 +166,6 @@ apiRoutes.post('/signup', function(req, res) {
 });
 
 
-
-
 // route middleware to verify a token
 apiRoutes.use(function(req, res, next) {
 
@@ -200,7 +179,6 @@ apiRoutes.use(function(req, res, next) {
     jwt.verify(token, app.get('superSecret'), function(err, decoded) {      
       if (err) {
         return res.json({ success: false, message: 'Failed to authenticate token.' });    
-
 
       } else {
         User.findById(decoded, function(err, existingUser) {
@@ -240,19 +218,15 @@ apiRoutes.use(function(req, res, next) {
   }
 });
 
-
-
 // route to show a random message (GET http://localhost:8080/api/)
 apiRoutes.get('/', function(req, res) {
   res.json({ id: req.decoded});
 });
 
 
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-
+// =======================
+// REST API ROUTES  ======
+// =======================
 
 // route to return all users 
 apiRoutes.get('/users', function(req, res) {
@@ -347,38 +321,24 @@ apiRoutes.delete('/users/:id', function(req, res) {
              if (err) return handleError(err);
               res.json(user);    
          });        
-    }
-    else{
+    } else {
         res.status(404).send();
     }
   });
 }); 
  
-
+// ========================
 
 
 // apply the routes to our application with the prefix /api
 app.use('/api', apiRoutes);
 
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
 app.get('/setup', function(req, res) {
 
   User.remove({}, function (err) {
     if (err) return handleError(err);
-
-    return res.json({message: 'All users was removed'});    
-
+    return res.json({message: 'Database cleared'});    
   });
-  
 });
 
 
@@ -388,7 +348,6 @@ app.get('/config', function(req, res) {
     socket: 'https://extracat-messenger-api.herokuapp.com',
     version: 1
   });
- 
 });
 
 
