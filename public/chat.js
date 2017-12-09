@@ -1,8 +1,9 @@
 var socket = io(); 
+var token = "";
 
 socket.on('connect', function () {
   $('#messages').append('<li>connected</li>');
-  socket.emit('authenticate', {token: 'eyJhbGciOiJIUzI1NiJ9.NWEyODQ2OTM0NGU0ZjU1ZjA1MTkyOGEw.R1yQRA38ezvbbyGXHVtXqaHRH3pJFIjjOZTAzNWKxTA'});
+  
 });
 
 socket.on('authenticated', function () {
@@ -14,10 +15,28 @@ socket.on('unauthorized', function (msg) {
 });
 
 socket.on('disconnect', function () {
-  $('#messages').append('<li>disconnected/li>');
+  $('#messages').append('<li>disconnected</li>');
 });
 
 
+$(document).ready(function(){
+    $("#signUpBtn").click(signUp);
+});
+
+function signUp() {
+    $.ajax({
+        url: "api/signup",
+        contentType: "application/json",
+        method: "POST",
+        data: JSON.stringify({anonymous: true}),
+        success: function (user) {
+       
+            token = user.token;
+            socket.emit('authenticate', {token: token});
+            $("#users").append("<li> " + user.id + " </li>");
+        }
+    })
+}
 
 
 

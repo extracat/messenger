@@ -2,13 +2,15 @@
 // get the packages we need 
 // =======================
 
-var os          = require("os")
+var os          = require('os');
 var path        = require('path');
 var express     = require('express');
 var bodyParser  = require('body-parser');
 var morgan      = require('morgan');
 var mongoose    = require('mongoose');
 var jwt         = require('jsonwebtoken'); 
+
+require('./app/applib')
 
 // =======================
 // configuration 
@@ -54,6 +56,7 @@ io.sockets
     console.log('a user authenticated: ' + socket.decoded_token);
 
     socket.on('chatMessage', function(from, msg){
+      console.log('chatMessage', socket.decoded_token, msg);
       io.emit('chatMessage', from, msg);
     });
 
@@ -124,6 +127,20 @@ apiRoutes.post('/authenticate', function(req, res) {
 // route to sign up new user
 apiRoutes.post('/signup', function(req, res) {
 
+  if (req.body.anonymous == true) {
+    var newUser = new User();
+    newUser.save(function(err, user) {
+        if (err) return console.error(err);
+        var token = jwt.sign(user.id, app.get('superSecret'));
+        res.json({
+          success: true,
+          id: user.id,  
+          token: token
+          });
+     })
+  }
+  else {
+
     if (req.body.username != null && req.body.password != null) {
 
       User.findOne({username: req.body.username}, function(err, user) {
@@ -157,12 +174,16 @@ apiRoutes.post('/signup', function(req, res) {
         }
     });
   }
-  else {
+
+    else {
     res.json({
                 success: false,
                 message: "Bad request"
             });
   }
+ }
+
+
 });
 
 
@@ -197,10 +218,7 @@ apiRoutes.use(function(req, res, next) {
                     }
                     else {
                       return res.json({ success: false, message: 'The user does not exist'});    
-
-
                     }
-
                   }
         });
       }
@@ -327,11 +345,16 @@ apiRoutes.delete('/users/:id', function(req, res) {
   });
 }); 
  
-// ========================
-
 
 // apply the routes to our application with the prefix /api
 app.use('/api', apiRoutes);
+
+// ========================
+
+
+
+
+// some service APIs
 
 app.get('/setup', function(req, res) {
 

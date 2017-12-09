@@ -7,8 +7,9 @@ var Schema = mongoose.Schema;
 module.exports = mongoose.model('User', new Schema({ 
     regDate: { type: Date, default: Date.now },
     username: {type: String, lowercase: true, unique: true},
+    password: String,
     email: String,
-    password: String
+    name: String
 }));
 
 

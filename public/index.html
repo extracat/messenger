@@ -9,7 +9,8 @@
 
     <link rel='stylesheet' href='style.css' type='text/css'/>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="chat.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
@@ -17,9 +18,14 @@
   <body>
     <div class="container">
       <div class="row">
-          <div class="col-4" style="background-color: #fafafa">
+          <div class="col-4">
+            <div class="col-3" style="background-color: #fafafa;position: fixed; top: 0;  ">
+              <p style="padding-top: 30px"> 
+               <button class="btn btn-secondary" type="button" id="signUpBtn">Sign up new user</button>
+              </p>
             <h2>Users</h2>
             <ul id="users"></ul>
+          </div>
           </div>
           <div class="col-8"><h2>Conversation</h2>
 
@@ -28,8 +34,8 @@
 
               <form class="form-inline" style="width: 60%" id="form" action="" onsubmit="return submitfunction();">
               <input type="hidden" id="user" value="" />
-                <div class="input-group col-12">
-                  <input type="text" class="form-control" style="width: 100%;" id="m" autocomplete="off" onkeyup="notifyTyping();" placeholder="Type yor message here.." />
+                <div class="input-group col-8" style="margin-left: 100px">
+                  <input type="text" class="form-control" style="width: 70%;" id="m" autocomplete="off" onkeyup="notifyTyping();" placeholder="Type yor message here.." />
                   <span class="input-group-btn">
                     <button class="btn btn-secondary" type="submit" id="button">Send</button>
                   </span>
