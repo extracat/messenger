@@ -10,14 +10,20 @@ var morgan      = require('morgan');
 var mongoose    = require('mongoose');
 var jwt         = require('jsonwebtoken'); 
 
-require('./app/applib')
 
 // =======================
 // configuration 
 // =======================
 
 var config = require('./config'); // get our config file
-var User   = require('./app/models/user'); // get our mongoose model
+
+// get our mongoose models
+var Conversation  = require('./app/models/conversation');
+var User          = require('./app/models/user'); 
+var Message       = require('./app/models/message');
+
+
+
 
 var app = express()
 var server = require('http').createServer(app)
@@ -36,6 +42,54 @@ app.use(bodyParser.json());
 
 // use morgan to log requests to the console
 app.use(morgan('dev'));
+
+
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////
+
+function addMessage(senderId, conversationId, content, callback) {
+  var newMessage = new Message();
+  newMessage.senderId = senderId;
+  newMessage.conversationId = conversationId;
+  newMessage.content = content;
+
+  if (conversationId == null) {
+        var newConversation = new Conversation();
+        newConversation.participants.push(senderId);
+        newConversation.save(function(err, conversation) {
+            if (err) return console.error(err);
+            newMessage.conversationId = conversation.id
+            console.log(newMessage);
+            saveMessage(newMessage,callback);
+          })
+    } else {  
+      saveMessage(newMessage,callback);
+    }
+}
+
+function saveMessage(message,callback){               
+    message.save(function(err, message) {
+        if (err) return console.error(err);
+        if (typeof callback === "function") {callback(message)}
+      })
+}
+
+
+function notifyUsers(conversationId) {
+
+}
+
+
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////
 
 
 
@@ -57,6 +111,9 @@ io.sockets
 
     socket.on('chatMessage', function(from, msg){
       console.log('chatMessage', socket.decoded_token, msg);
+
+      addMessage(socket.decoded_token, null, msg, function(){})
+
       io.emit('chatMessage', from, msg);
     });
 
