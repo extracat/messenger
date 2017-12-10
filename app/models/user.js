@@ -18,12 +18,11 @@ module.exports = mongoose.model('Conversation', new Schema({
 }));
 
 module.exports = mongoose.model('Message', new Schema({ 
-	sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
-    recipient: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
+	senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    converstationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation' }, 
     sentTime: { type: Date, default: Date.now }, 
     deliveredTime: Date,
     readTime: Date,
-    converstationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation' },
     content: String
 }));
 

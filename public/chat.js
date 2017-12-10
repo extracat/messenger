@@ -23,17 +23,32 @@ $(document).ready(function(){
     $("#signUpBtn").click(signUp);
 });
 
+
+$(document).ready(function(){
+    $("#connectBtn").click(function(){
+            socket.connect();
+            socket.emit('authenticate', {token: token});
+    });
+});
+
+$(document).ready(function(){
+    $("#disconnectBtn").click(function(){
+      socket.disconnect();
+    });
+});
+
 function signUp() {
+    socket.disconnect();
     $.ajax({
         url: "api/signup",
         contentType: "application/json",
         method: "POST",
         data: JSON.stringify({anonymous: true}),
         success: function (user) {
-       
+            socket.connect();
             token = user.token;
             socket.emit('authenticate', {token: token});
-            $("#users").append("<li> " + user.id + " </li>");
+            $("#messages").append("<li>User ID: " + user.id + " </li>");
         }
     })
 }
