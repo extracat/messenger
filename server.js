@@ -67,7 +67,7 @@ function addMessage(senderId, conversationId, content, callback) {
         newConversation.save(function(err, conversation) {
             if (err) return console.error(err);
             newMessage.conversationId = conversation.id
-            console.log(newMessage);
+            //console.log("conversation created");
             saveMessage(newMessage,callback);
           })
     } else {  
@@ -77,16 +77,65 @@ function addMessage(senderId, conversationId, content, callback) {
 
 function saveMessage(message,callback){               
     message.save(function(err, message) {
-        if (err) return console.error(err);
+        if (err) return console.error(err);        
         if (typeof callback === "function") {callback(message)}
+        //console.log("message added: ", message);
       })
 }
 
 
-function notifyUsers(conversationId) {
+function notifyUsers(sockets, message) {
+ Conversation.findById(message.conversationId, function(err, conversation) {
+    if (err) return console.error(err);  
+    if(conversation){
+        
+        var participants = conversation.participants;
 
+        participants.forEach(function(userId, i, arr) {
+         
+           if (userId != message.senderId){
+              sendMessage(sockets, userId, message); // Send message to the user
+           }
+
+        });
+
+    }
+    else{
+        console.error("ERROR: conversation was not found!");
+    }
+  });
 }
 
+function sendMessage(sockets, userId, message) {
+  sockets.forEach(function(socket, i, arr) {
+      if (sockets.userId == userId){
+              socket.emit('chatMessage', message.senderId, message.content, message.conversationId);
+              console.log("message sent to: ", userId);
+           }
+  });
+}
+
+
+function addUserToLonelyConversation(userId) {
+
+    var cursor = Conversation.find({}).cursor();
+
+    // Print every document that matches the query, one at a time
+    cursor.on('data', function(conversation) {
+
+      if (conversation.participants.length == 1) {
+        cursor.pause(); 
+        console.log("lonly conv: ", conversation); 
+        conversation.participants.push(userId);
+        Conversation.findByIdAndUpdate(conversation.id, conversation, function(err, model) {
+           // sending all messages to user
+           
+
+        });
+       }
+
+    });    
+}
 
 ///////////////////////
 ///////////////////////
@@ -101,9 +150,11 @@ function notifyUsers(conversationId) {
 // socket.io 
 // =======================
 
+var allSockets = [];
+
 io.sockets
   .on('connection', socketioJwt.authorize({
-    secret: 'supertonyhasasecret',
+    secret: app.get('superSecret'),
     timeout: 15000 // 15 seconds to send the authentication message
   })).on('authenticated', function(socket) {
 
@@ -111,14 +162,31 @@ io.sockets
     // this socket is authenticated, we are good to handle more events from it
     // ==============================================
 
+    // add user to the connected users array
+    allSockets.push({socket: socket, userId: socket.decoded_token}); 
+
+    // find an empty conversation for the user 
+    addUserToLonelyConversation(socket.decoded_token);
+
     console.log('a user authenticated: ' + socket.decoded_token);
 
-    socket.on('chatMessage', function(from, msg){
-      console.log('chatMessage', socket.decoded_token, msg);
 
-      addMessage(socket.decoded_token, null, msg, function(){})
 
-      io.emit('chatMessage', from, msg);
+
+    // Event, then message was sent to conversation
+    socket.on('chatMessage', function(from, msg, conversationId){
+      console.log('server recieve msg:', socket.decoded_token, msg);
+
+      addMessage(socket.decoded_token, conversationId, msg, function(message) {
+
+        notifyUsers(allSockets, message) // notifing all users in conversation
+
+        // tell user about conversation id
+        socket.emit('chatMessage', null, null, message.conversationId);
+
+      });
+
+      
     });
 
     socket.on('notifyUser', function(user){
