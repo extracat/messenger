@@ -2,6 +2,31 @@
 // get the packages we need 
 // =======================
 
+const { Client } = require('pg');
+
+const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/messenger';
+
+const client = new Client({
+  //connectionString: connectionString,
+  // ssl: true,
+});
+
+
+client.connect();
+
+client.query('SELECT * FROM user;', (err, res) => {
+
+  console.log("str: ", client.connectionString); 
+
+  if (err) throw err;
+  for (let row of res.rows) {
+    console.log(JSON.stringify(row));
+  }
+  client.end();
+});
+
+
+
 var os          = require('os');
 var path        = require('path');
 var express     = require('express');
