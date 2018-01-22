@@ -6,47 +6,35 @@ var os          = require('os');
 var path        = require('path');
 var express     = require('express');
 var bodyParser  = require('body-parser');
-var morgan      = require('morgan');
-var mongoose    = require('mongoose');
+//var morgan      = require('morgan');
+//var mongoose    = require('mongoose');
 var jwt         = require('jsonwebtoken'); 
 
 // =======================
 // Database 
 // =======================
 
+var model 			= require('./app/model.js'); 
 
-const { Pool } = require('pg')
-var pool;
+/*
 
-if (process.env.DATABASE_URL === undefined) { // if localhost
-  pool = new Pool({
-    database: 'messenger', 
-  });
-}
-else {  // if heroku
-  pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true,
-  });
-}
+model.test(function(res){
 
+	 console.log(res.rows)
 
+});
+*/
 
-// async/await - check out a client
-(async () => {
-  const client = await pool.connect()
-  try {
-    const res = await client.query('SELECT * FROM test_table')
+model.createUser('test3', '12345', 'test3@test.ru', 'Mister Tester', function(res,err){
 
-    
-    console.log(res.rows)
-  } finally {
-    client.release()
-  }
-})().catch(e => console.log(e.stack))
+	if (err) {
+		console.error(err);
+	}
+	else {
+		console.log(res.rows);
+	}
 
-
-
+});
 
 
 // =======================
@@ -56,9 +44,9 @@ else {  // if heroku
 var config = require('./config'); // get our config file
 
 // get our mongoose models
-var Conversation  = require('./app/models/conversation');
-var User          = require('./app/models/user'); 
-var Message       = require('./app/models/message');
+//var Conversation  = require('./app/models/conversation');
+//var User          = require('./app/models/user'); 
+//var Message       = require('./app/models/message');
 
 
 
@@ -72,8 +60,8 @@ var hostname = os.hostname()
 var port = process.env.PORT || 3000
 
 
-mongoose.Promise = global.Promise;
-mongoose.connect(config.database, {useMongoClient: true}); // connect to database
+//mongoose.Promise = global.Promise;
+//mongoose.connect(config.database, {useMongoClient: true}); // connect to database
 
 
 app.set('superSecret', config.secret); // secret variable
@@ -83,104 +71,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // use morgan to log requests to the console
-app.use(morgan('dev'));
+//app.use(morgan('dev'));
 
 
-///////////////////////
-///////////////////////
-///////////////////////
-///////////////////////
-///////////////////////
-///////////////////////
 
-function addMessage(senderId, conversationId, content, callback) {
-  var newMessage = new Message();
-  newMessage.senderId = senderId;
-  newMessage.conversationId = conversationId;
-  newMessage.content = content;
-
-  if (conversationId == null) {
-        var newConversation = new Conversation();
-        newConversation.participants.push(senderId);
-        newConversation.save(function(err, conversation) {
-            if (err) return console.error(err);
-            newMessage.conversationId = conversation.id
-            //console.log("conversation created");
-            saveMessage(newMessage,callback);
-          })
-    } else {  
-      saveMessage(newMessage,callback);
-    }
-}
-
-function saveMessage(message,callback){               
-    message.save(function(err, message) {
-        if (err) return console.error(err);        
-        if (typeof callback === "function") {callback(message)}
-        //console.log("message added: ", message);
-      })
-}
-
-
-function notifyUsers(sockets, message) {
- Conversation.findById(message.conversationId, function(err, conversation) {
-    if (err) return console.error(err);  
-    if(conversation){
-        
-        var participants = conversation.participants;
-
-        participants.forEach(function(userId, i, arr) {
-         
-           if (userId != message.senderId){
-              sendMessage(sockets, userId, message); // Send message to the user
-           }
-
-        });
-
-    }
-    else{
-        console.error("ERROR: conversation was not found!");
-    }
-  });
-}
-
-function sendMessage(sockets, userId, message) {
-  sockets.forEach(function(socket, i, arr) {
-      if (sockets.userId == userId){
-              socket.emit('chatMessage', message.senderId, message.content, message.conversationId);
-              console.log("message sent to: ", userId);
-           }
-  });
-}
-
-
-function addUserToLonelyConversation(userId) {
-
-    var cursor = Conversation.find({}).cursor();
-
-    // Print every document that matches the query, one at a time
-    cursor.on('data', function(conversation) {
-
-      if (conversation.participants.length == 1) {
-        cursor.pause(); 
-        console.log("lonly conv: ", conversation); 
-        conversation.participants.push(userId);
-        Conversation.findByIdAndUpdate(conversation.id, conversation, function(err, model) {
-           // sending all messages to user
-           
-
-        });
-       }
-
-    });    
-}
-
-///////////////////////
-///////////////////////
-///////////////////////
-///////////////////////
-///////////////////////
-///////////////////////
 
 
 
@@ -414,103 +308,11 @@ apiRoutes.get('/', function(req, res) {
 // =======================
 
 // route to return all users 
-apiRoutes.get('/users', function(req, res) {
-  User.find({}, function(err, users) {
-    res.json(users);
-  });
-});   
-
-
-
-apiRoutes.get('/users/:id', function(req, res) {
-    
-  var id = req.params.id; 
-    
-  User.findById(id, function(err, user) {
-        
-    if(user){
-        res.json(user);
-    }
-    else{
-        res.status(404).send();
-    }
-  });
-});   
-
-
-apiRoutes.post('/users', function(req, res) {
-
-    if (req.body.username != null && req.body.password != null) {
-
-      User.findOne({username: req.body.username}, function(err, user) {
-        if (err) {
-            res.json({
-                success: false,
-                message: "Error occured: " + err
-            });
-        } else {
-            if (user) {
-                res.json({
-                    success: false,
-                    message: "User already exists!"
-                });
-            } else {
-                var newUser = new User();
-                newUser.username = req.body.username;
-                newUser.password = req.body.password;
-               
-                newUser.save(function(err, user) {
-                        if (err) return console.error(err);
-                        res.json(user);
-                })
-            }
-        }
-    });
-  }
-  else {
-    res.json({
-                success: false,
-                message: "Bad request"
-            });
-  }
-
-
- 
-}); 
-
-
-apiRoutes.put('/users/:id', function(req, res) {
-
-  var id = req.params.id; 
-    
-  User.findByIdAndUpdate(id, {username: req.body.username, password: req.body.password}, function(err, user) {
-        
-    if(user){
-          User.findById(id, function(err, user2) {res.json(user2)});
-    }
-    else{
-        res.status(404).send();
-    }
-  });
- 
-});
-
-
-apiRoutes.delete('/users/:id', function(req, res) {
-  var id = req.params.id; 
-    
-  User.findById(id, function(err, user) {
-        
-    if(user){
-        user.remove(function (err) {
-             if (err) return handleError(err);
-              res.json(user);    
-         });        
-    } else {
-        res.status(404).send();
-    }
-  });
-}); 
+apiRoutes.get('/users', model.restUsersGetAll);   
+apiRoutes.get('/users/:id', model.restUsersGet);   
+apiRoutes.post('/users', model.restUsersPost);
+apiRoutes.put('/users/:id', model.restUsersPut);
+apiRoutes.delete('/users/:id', model.restUsersDelete); 
  
 
 // apply the routes to our application with the prefix /api
@@ -520,20 +322,14 @@ app.use('/api', apiRoutes);
 
 
 
-
 // some service APIs
 
 app.get('/setup', function(req, res) {
 
-  User.remove({}, function (err) {
-    if (err) return handleError(err);
-    return res.json({message: 'Database cleared'});    
-  });
 });
 
 
 app.get('/config', function(req, res) {
-
   res.json({ 
     socket: 'https://extracat-messenger-api.herokuapp.com',
     version: 1
