@@ -2,31 +2,6 @@
 // get the packages we need 
 // =======================
 
-const { Client } = require('pg');
-
-const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/messenger';
-
-const client = new Client({
-  //connectionString: connectionString,
-  // ssl: true,
-});
-
-
-client.connect();
-
-client.query('SELECT * FROM user;', (err, res) => {
-
-  console.log("str: ", client.connectionString); 
-
-  if (err) throw err;
-  for (let row of res.rows) {
-    console.log(JSON.stringify(row));
-  }
-  client.end();
-});
-
-
-
 var os          = require('os');
 var path        = require('path');
 var express     = require('express');
@@ -34,6 +9,44 @@ var bodyParser  = require('body-parser');
 var morgan      = require('morgan');
 var mongoose    = require('mongoose');
 var jwt         = require('jsonwebtoken'); 
+
+// =======================
+// Database 
+// =======================
+
+
+const { Pool } = require('pg')
+var pool;
+
+if (process.env.DATABASE_URL === undefined) { // if localhost
+  pool = new Pool({
+    database: 'messenger', 
+  });
+}
+else {  // if heroku
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true,
+  });
+}
+
+
+
+// async/await - check out a client
+(async () => {
+  const client = await pool.connect()
+  try {
+    const res = await client.query('SELECT * FROM test_table')
+
+    
+    console.log(res.rows)
+  } finally {
+    client.release()
+  }
+})().catch(e => console.log(e.stack))
+
+
+
 
 
 // =======================
