@@ -17,24 +17,11 @@ var jwt         = require('jsonwebtoken');
 var model 			= require('./app/model.js'); 
 
 /*
-
 model.test(function(res){
-
 	 console.log(res.rows)
-
 });
 */
 
-model.createUser('test3', '12345', 'test3@test.ru', 'Mister Tester', function(res,err){
-
-	if (err) {
-		console.error(err);
-	}
-	else {
-		console.log(res.rows);
-	}
-
-});
 
 
 // =======================
@@ -154,18 +141,13 @@ var apiRoutes = express.Router();
 apiRoutes.post('/authenticate', function(req, res) {
 
   // find the user
-  User.findOne({username: req.body.username}, function(err, user) {
+  model.getUserByUsername(req.body.username, function(modelRes) {
 
-    if (err) {
-            res.json({
-                success: false,
-                message: "Error occured: " + err
-            });
-    } else {
+        if (modelRes.rowCount != 1) {
 
-        if (!user) {
           res.json({ success: false, message: 'Authentication failed. User not found.' });
-        } else if (user) {
+        } else {
+        	var user = modelRes.rows[0];
 
           // check if password matches
           if (user.password != req.body.password) {
@@ -182,7 +164,7 @@ apiRoutes.post('/authenticate', function(req, res) {
             });
           }   
         }
-  }});
+  });
 });
 
 // route to sign up new user
@@ -248,7 +230,10 @@ apiRoutes.post('/signup', function(req, res) {
 });
 
 
-// route middleware to verify a token
+// ========================================== //
+// === route middleware to verify a token === //
+// ========================================== //
+
 apiRoutes.use(function(req, res, next) {
 
   // check header or url parameters or post parameters for token
@@ -263,24 +248,17 @@ apiRoutes.use(function(req, res, next) {
         return res.json({ success: false, message: 'Failed to authenticate token.' });    
 
       } else {
-        User.findById(decoded, function(err, existingUser) {
-                if (err) {
-                    res.json({
-                        success: false,
-                        message: "Error occured: " + err
-                    });
-                } else {
-                    if (existingUser && existingUser.id == decoded) {
+        model.getUserById(decoded, function(modelRes) {
+						existingUser = modelRes.rows[0]
+            if (existingUser && existingUser.id == decoded) {
 
-                        // if everything is good, save to request for use in other routes
-                        req.decoded = decoded;    
-                        next();
+               // if everything is good, save to request for use in other routes
+               req.decoded = decoded;    
+               next();
 
-                    }
-                    else {
-                      return res.json({ success: false, message: 'The user does not exist'});    
-                    }
-                  }
+       		 } else {
+        			return res.json({ success: false, message: 'The user does not exist'});
+        	 }       
         });
       }
     });
@@ -293,11 +271,9 @@ apiRoutes.use(function(req, res, next) {
         success: false, 
         message: 'No token provided.' 
     });
+}});
 
-  }
-});
 
-// route to show a random message (GET http://localhost:8080/api/)
 apiRoutes.get('/', function(req, res) {
   res.json({ id: req.decoded});
 });
@@ -308,11 +284,34 @@ apiRoutes.get('/', function(req, res) {
 // =======================
 
 // route to return all users 
-apiRoutes.get('/users', model.restUsersGetAll);   
-apiRoutes.get('/users/:id', model.restUsersGet);   
-apiRoutes.post('/users', model.restUsersPost);
-apiRoutes.put('/users/:id', model.restUsersPut);
-apiRoutes.delete('/users/:id', model.restUsersDelete); 
+apiRoutes.get('/users', function(req, res) {
+	model.getAllUsers(function(modelRes) {res.json(modelRes.rows)});
+});
+
+apiRoutes.get('/users/:id', function(req, res) {
+	model.getUserById(req.params.id, function(modelRes) {
+		res.json(modelRes.rows[0])
+	});
+});
+
+apiRoutes.post('/users', function(req, res) {
+	model.name(param, function(modelRes) {
+		
+		//res.json(modelRes.rows)
+	});
+});
+apiRoutes.put('/users/:id', function(req, res) {
+	model.name(param, function(modelRes) {
+		
+		//res.json(modelRes.rows)
+	});
+});
+apiRoutes.delete('/users/:id', function(req, res) {
+	model.name(param, function(modelRes) {
+		
+		//res.json(modelRes.rows)
+	});
+});
  
 
 // apply the routes to our application with the prefix /api

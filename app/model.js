@@ -20,6 +20,8 @@ class Model {
     this.pool = pool;
   }
 
+
+
 test(callback) {
 		(async () => {
 		  const client = await this.pool.connect()
@@ -51,6 +53,46 @@ createUser(username, password, email, name, callback){
 		    client.release()
 		  }
 		})().catch(e => console.log(e.stack))
+}
+
+
+getUserByUsername(username, callback){
+    (async () => {
+      const client = await this.pool.connect()
+      try {
+        const res = await client.query('SELECT * FROM users WHERE username = $1', [username]);
+        callback(res);
+
+      } finally {
+        client.release()
+      }
+    })().catch(e => console.log(e.stack))
+}
+
+getUserById(id, callback){
+    (async () => {
+      const client = await this.pool.connect()
+      try {
+        const res = await client.query('SELECT * FROM users WHERE id = $1', [id]);
+        callback(res);
+
+      } finally {
+        client.release()
+      }
+    })().catch(e => console.log(e.stack))
+}
+
+getAllUsers(callback) {
+    (async () => {
+      const client = await this.pool.connect()
+      try {
+        const res = await client.query('SELECT * FROM users');
+        callback(res);
+
+      } finally {
+        client.release()
+      }
+    })().catch(e => console.log(e.stack))
 }
 
 ///////////////////////
@@ -156,27 +198,6 @@ addUserToLonelyConversation(userId) {
 // =======================
 
 
-restUsersGetAll(req, res) {
-  User.find({}, function(err, users) {
-    res.json(users);
-  });
-}
-
-
-restUsersGet(req, res) {
-    
-  var id = req.params.id; 
-    
-  User.findById(id, function(err, user) {
-        
-    if(user){
-        res.json(user);
-    }
-    else{
-        res.status(404).send();
-    }
-  });
-}
 
 restUsersPost(req, res) {
 
