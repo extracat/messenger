@@ -6,8 +6,6 @@ var os          = require('os');
 var path        = require('path');
 var express     = require('express');
 var bodyParser  = require('body-parser');
-//var morgan      = require('morgan');
-//var mongoose    = require('mongoose');
 var jwt         = require('jsonwebtoken'); 
 
 // =======================
@@ -16,27 +14,12 @@ var jwt         = require('jsonwebtoken');
 
 var model 			= require('./app/model.js'); 
 
-/*
-model.test(function(res){
-	 console.log(res.rows)
-});
-*/
-
-
 
 // =======================
 // configuration 
 // =======================
 
 var config = require('./config'); // get our config file
-
-// get our mongoose models
-//var Conversation  = require('./app/models/conversation');
-//var User          = require('./app/models/user'); 
-//var Message       = require('./app/models/message');
-
-
-
 
 var app = express()
 var server = require('http').createServer(app)
@@ -46,22 +29,11 @@ var socketioJwt = require('socketio-jwt')
 var hostname = os.hostname()
 var port = process.env.PORT || 3000
 
-
-//mongoose.Promise = global.Promise;
-//mongoose.connect(config.database, {useMongoClient: true}); // connect to database
-
-
 app.set('superSecret', config.secret); // secret variable
 
 // use body parser so we can get info from POST and/or URL parameters
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-// use morgan to log requests to the console
-//app.use(morgan('dev'));
-
-
-
 
 
 
@@ -84,11 +56,14 @@ io.sockets
     // add user to the connected users array
     allSockets.push({socket: socket, userId: socket.decoded_token}); 
 
-    // find an empty conversation for the user 
-    addUserToLonelyConversation(socket.decoded_token);
+    
+    //++++++++++//
+    //++++++++++// // find an empty conversation for the user 
+    //++++++++++// addUserToLonelyConversation(socket.decoded_token);
+    //++++++++++//
+    //++++++++++//
 
     console.log('a user authenticated: ' + socket.decoded_token);
-
 
 
 
@@ -96,17 +71,19 @@ io.sockets
     socket.on('chatMessage', function(from, msg, conversationId){
       console.log('server recieve msg:', socket.decoded_token, msg);
 
-      addMessage(socket.decoded_token, conversationId, msg, function(message) {
+      //addMessage(socket.decoded_token, conversationId, msg, function(message) {
 
-        notifyUsers(allSockets, message) // notifing all users in conversation
+         
+        //notifyUsers(allSockets, message) // notifing all users in conversation
 
         // tell user about conversation id
-        socket.emit('chatMessage', null, null, message.conversationId);
+        //socket.emit('chatMessage', null, null, message.conversationId);
 
-      });
+      //});
 
       
     });
+    
 
     socket.on('notifyUser', function(user){
       io.emit('notifyUser', user);
@@ -171,63 +148,62 @@ apiRoutes.post('/authenticate', function(req, res) {
 apiRoutes.post('/signup', function(req, res) {
 
   if (req.body.anonymous == true) {
-    var newUser = new User();
-    newUser.save(function(err, user) {
-        if (err) return console.error(err);
-        var token = jwt.sign(user.id, app.get('superSecret'));
-        res.json({
-          success: true,
-          id: user.id,  
-          token: token
+
+
+    // if user wants to sign anonimously - he may provide only name (optional)
+    model.createUser(null, null, null, req.body.name, function(modelRes, err) {
+      var user = modelRes.rows[0];
+      if (err) {
+          res.json({
+              success: false,
+              message: "Error occured: " + err
           });
-     })
-  }
-  else {
-
-    if (req.body.username != null && req.body.password != null) {
-
-      User.findOne({username: req.body.username}, function(err, user) {
-        if (err) {
-            res.json({
-                success: false,
-                message: "Error occured: " + err
-            });
-        } else {
-            if (user) {
-                res.json({
-                    success: false,
-                    message: "User already exists!"
-                });
-            } else {
-                var newUser = new User();
-                newUser.username = req.body.username;
-                newUser.password = req.body.password;
-               
-                newUser.save(function(err, user) {
-                        if (err) return console.error(err);
-
-                        var token = jwt.sign(user.id, app.get('superSecret'));
-                        res.json({
-                            success: true,
-                            id: user.id,
-                            token: token
-                        });
-                })
-            }
-        }
+      } else {
+          var token = jwt.sign(user.id, app.get('superSecret'));
+          res.json({
+              success: true,
+              id: user.id,  
+              token: token
+          });
+      }
     });
-  }
+
+
+  } else {
+
+
+    // if user wants to provide username and password - we must check some stuff
+    if ( (req.body.username != null || req.body.email != null) && req.body.password != null) {
+
+        model.createUser(req.body.username, req.body.password, req.body.email, req.body.name, function(modelRes, err) {
+          var user = modelRes.rows[0];
+          if (err) {
+              res.json({
+                  success: false,
+                  message: "Error occured: " + err
+              });
+          } else {
+              var token = jwt.sign(user.id, app.get('superSecret'));
+              res.json({
+                  success: true,
+                  id: user.id,  
+                  token: token
+              });
+          }
+        });
+    }
 
     else {
     res.json({
                 success: false,
-                message: "Bad request"
+                message: "Bad request: username or password is empty"
             });
-  }
+    }
  }
 
 
 });
+
 
 
 // ========================================== //
@@ -249,16 +225,16 @@ apiRoutes.use(function(req, res, next) {
 
       } else {
         model.getUserById(decoded, function(modelRes) {
-						existingUser = modelRes.rows[0]
+            existingUser = modelRes.rows[0]
             if (existingUser && existingUser.id == decoded) {
 
                // if everything is good, save to request for use in other routes
                req.decoded = decoded;    
                next();
 
-       		 } else {
-        			return res.json({ success: false, message: 'The user does not exist'});
-        	 }       
+           } else {
+              return res.json({ success: false, message: 'The user does not exist'});
+           }       
         });
       }
     });
@@ -274,8 +250,22 @@ apiRoutes.use(function(req, res, next) {
 }});
 
 
+
+// some service routes
+
 apiRoutes.get('/', function(req, res) {
   res.json({ id: req.decoded});
+});
+
+app.get('/setup', function(req, res) {
+//
+});
+
+app.get('/config', function(req, res) {
+  res.json({ 
+    socket: 'https://extracat-messenger-api.herokuapp.com',
+    version: 1
+  });
 });
 
 
@@ -295,45 +285,44 @@ apiRoutes.get('/users/:id', function(req, res) {
 });
 
 apiRoutes.post('/users', function(req, res) {
-	model.name(param, function(modelRes) {
-		
-		//res.json(modelRes.rows)
+	model.createUser(req.body.username, req.body.password, req.body.email, req.body.name, function(modelRes, err) {
+    if (err) {
+        res.json({
+            success: false,
+            message: "Error occured: " + err
+        });
+    } else {
+        res.json(modelRes.rows[0]);
+    }
 	});
 });
+
 apiRoutes.put('/users/:id', function(req, res) {
-	model.name(param, function(modelRes) {
-		
-		//res.json(modelRes.rows)
+	model.editUser(req.params.id, req.body.username, req.body.password, req.body.email, req.body.name, function(modelRes, err) {
+    if (err) {
+        res.json({
+            success: false,
+            message: "Error occured: " + err
+        });
+    } else {
+        res.json(modelRes.rows[0]);
+    }
 	});
 });
+
+
 apiRoutes.delete('/users/:id', function(req, res) {
-	model.name(param, function(modelRes) {
-		
-		//res.json(modelRes.rows)
+	model.deleteUser(req.params.id, function(modelRes) {
+		res.json(modelRes.rows[0])
 	});
 });
  
 
-// apply the routes to our application with the prefix /api
-app.use('/api', apiRoutes);
-
 // ========================
 
 
-
-// some service APIs
-
-app.get('/setup', function(req, res) {
-
-});
-
-
-app.get('/config', function(req, res) {
-  res.json({ 
-    socket: 'https://extracat-messenger-api.herokuapp.com',
-    version: 1
-  });
-});
+// apply the routes to our application with the prefix /api
+app.use('/api', apiRoutes);
 
 
 // =======================

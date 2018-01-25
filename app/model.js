@@ -35,25 +35,9 @@ test(callback) {
 		})().catch(e => console.log(e.stack))
 	}
 
-createUser(username, password, email, name, callback){
-		(async () => {
-		  const client = await this.pool.connect()
-		  try {
-
-				const res1 = await client.query('SELECT COUNT(*) FROM users WHERE username = $1 OR email = $2', [username, email]);
-				if (res1.rows[0].count == 0) { 
-			     const res = await client.query('INSERT INTO users(username, password, email, name) VALUES ($1, $2, $3, $4) RETURNING *', [username, password, email, name]);
-			     callback(res);
-		 	  }
-		 	  else {
-		 	  	callback(null,"DB error: username or email dublicate");
-		 	  }
-
-		  } finally {
-		    client.release()
-		  }
-		})().catch(e => console.log(e.stack))
-}
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+//////////////////////////////////////////////
 
 
 getUserByUsername(username, callback){
@@ -95,12 +79,63 @@ getAllUsers(callback) {
     })().catch(e => console.log(e.stack))
 }
 
-///////////////////////
-///////////////////////
-///////////////////////
-///////////////////////
-///////////////////////
-///////////////////////
+
+createUser(username, password, email, name, callback){
+    (async () => {
+      const client = await this.pool.connect()
+      try {
+
+        const res1 = await client.query('SELECT COUNT(*) FROM users WHERE username = $1 OR email = $2', [username, email]);
+        if (res1.rows[0].count == 0) { 
+           const res = await client.query('INSERT INTO users(username, password, email, name) VALUES ($1, $2, $3, $4) RETURNING *', [username, password, email, name]);
+           callback(res);
+        }
+        else {
+          callback(null,"DB error: username or email dublicate");
+        }
+
+      } finally {
+        client.release()
+      }
+    })().catch(e => console.log(e.stack))
+}
+
+editUser(id, username, password, email, name, callback){
+    (async () => {
+      const client = await this.pool.connect()
+      try {
+
+        const res1 = await client.query('SELECT COUNT(*) FROM users WHERE (username = $1 OR email = $2) AND id <> $3', [username, email, id]);
+        if (res1.rows[0].count == 0) { 
+          const res = await client.query('UPDATE users SET username = $1, password = $2, email = $3, name = $4 WHERE id = $5 RETURNING *', [username, password, email, name, id]);
+          callback(res);
+        }
+        else {
+          callback(null,"DB error: username or email dublicate");
+        }
+
+      } finally {
+        client.release()
+      }
+    })().catch(e => console.log(e.stack))
+}
+
+deleteUser(id, callback){
+    (async () => {
+      const client = await this.pool.connect()
+      try {
+          const res = await client.query('DELETE FROM users WHERE id = $1 RETURNING *', [id]);
+          callback(res);
+
+      } finally {
+        client.release()
+      }
+    })().catch(e => console.log(e.stack))
+}
+
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+//////////////////////////////////////////////
 
 addMessage(senderId, conversationId, content, callback) {
   var newMessage = new Message();
@@ -184,93 +219,9 @@ addUserToLonelyConversation(userId) {
     });    
 }
 
-///////////////////////
-///////////////////////
-///////////////////////
-///////////////////////
-///////////////////////
-///////////////////////
-
-
-
-// =======================
-// REST API QUERIES  =====
-// =======================
-
-
-
-restUsersPost(req, res) {
-
-    if (req.body.username != null && req.body.password != null) {
-
-      User.findOne({username: req.body.username}, function(err, user) {
-        if (err) {
-            res.json({
-                success: false,
-                message: "Error occured: " + err
-            });
-        } else {
-            if (user) {
-                res.json({
-                    success: false,
-                    message: "User already exists!"
-                });
-            } else {
-                var newUser = new User();
-                newUser.username = req.body.username;
-                newUser.password = req.body.password;
-               
-                newUser.save(function(err, user) {
-                        if (err) return console.error(err);
-                        res.json(user);
-                })
-            }
-        }
-    });
-  }
-  else {
-    res.json({
-                success: false,
-                message: "Bad request"
-            });
-  }
-
-}
-
-restUsersPut(req, res) {
-
-  var id = req.params.id; 
-    
-  User.findByIdAndUpdate(id, {username: req.body.username, password: req.body.password}, function(err, user) {
-        
-    if(user){
-          User.findById(id, function(err, user2) {res.json(user2)});
-    }
-    else{
-        res.status(404).send();
-    }
-  });
- 
-}
-
-restUsersDelete(req, res) {
-  var id = req.params.id; 
-    
-  User.findById(id, function(err, user) {
-        
-    if(user){
-        user.remove(function (err) {
-             if (err) return handleError(err);
-              res.json(user);    
-         });        
-    } else {
-        res.status(404).send();
-    }
-  });
-}
-
-// ========================
-
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+//////////////////////////////////////////////
 
 }
 module.exports = new Model();
