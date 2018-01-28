@@ -11,6 +11,10 @@ socket.on('connect', function () {
 socket.on('authenticated', function () {
   $('#messages').append('<li>authenticated</li>');
 });
+
+socket.on('authorized', function () {
+  $('#messages').append('<li>authorized</li>');
+});
     
 socket.on('unauthorized', function (msg) {
   $('#messages').append('<li>authentication error: ' + msg.message + '</li>');
