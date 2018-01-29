@@ -55,13 +55,11 @@ io.sockets
 
     // add user to the connected users array
     allSockets.push({socket: socket, userId: socket.decoded_token}); 
-
     
-    //++++++++++//
-    //++++++++++// // find an empty conversation for the user 
-    //++++++++++// addUserToLonelyConversation(socket.decoded_token);
-    //++++++++++//
-    //++++++++++//
+
+    // find an empty conversation for the user 
+    addUserToLonelyConversation(socket.decoded_token);
+
 
     console.log('user authenticated: ' + socket.decoded_token);
 

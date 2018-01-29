@@ -2,6 +2,7 @@ var socket = io();
 var token;
 var conversationId;
 var myUserId;
+var authenticated = false;
 
 socket.on('connect', function () {
   $('#messages').append('<li>connected</li>');
@@ -9,6 +10,7 @@ socket.on('connect', function () {
 });
 
 socket.on('authenticated', function () {
+  authenticated = true;
   $('#messages').append('<li>authenticated</li>');
 });
 
@@ -21,6 +23,7 @@ socket.on('unauthorized', function (msg) {
 });
 
 socket.on('disconnect', function () {
+  authenticated = false;
   $('#messages').append('<li>disconnected</li>');
 });
 
@@ -47,8 +50,10 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     $("#connectBtn").click(function(){
+        if (!authenticated) {
             socket.connect();
             socket.emit('authenticate', {token: token});
+          }
     });
 });
 
