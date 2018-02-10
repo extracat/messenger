@@ -13,6 +13,7 @@ var jwt         = require('jsonwebtoken');
 // =======================
 
 var model 			= require('./app/model.js'); 
+var setup       = require('./app/setup.js'); 
 
 
 // =======================
@@ -256,7 +257,9 @@ apiRoutes.get('/', function(req, res) {
 });
 
 app.get('/setup', function(req, res) {
-//
+  setup.resetBase(function(modelRes) {
+    res.send('<code><span style="white-space: pre-line">' + modelRes + '</span></code>');
+  });
 });
 
 app.get('/config', function(req, res) {
