@@ -256,16 +256,17 @@ apiRoutes.get('/', function(req, res) {
   res.json({ id: req.decoded});
 });
 
-app.get('/setup', function(req, res) {
-  setup.resetBase(function(modelRes) {
-    res.send('<code><span style="white-space: pre-line">' + modelRes + '</span></code>');
-  });
-});
-
-app.get('/config', function(req, res) {
+apiRoutes.get('/config', function(req, res) {
   res.json({ 
     socket: 'https://extracat-messenger-api.herokuapp.com',
     version: 1
+  });
+});
+
+/// SHOULD BE DELETED!!!
+apiRoutes.get('/setup', function(req, res) {
+  setup.resetBase(function(modelRes) {
+    res.send('<code><span style="white-space: pre-line">' + modelRes + '</span></code>');
   });
 });
 

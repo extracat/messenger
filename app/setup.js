@@ -33,7 +33,10 @@ resetBase(callback) {
         var res;
         var str = "";
 
-        res = await client.query('DROP TABLE conversations, messages, user_conversation, users CASCADE'); str += JSON.stringify(res.rows) + '\n';
+        res = await client.query('DROP TABLE IF EXISTS conversations CASCADE'); str += JSON.stringify(res.rows) + '\n';
+        res = await client.query('DROP TABLE IF EXISTS messages CASCADE'); str += JSON.stringify(res.rows) + '\n';
+        res = await client.query('DROP TABLE IF EXISTS user_conversation CASCADE'); str += JSON.stringify(res.rows) + '\n';
+        res = await client.query('DROP TABLE IF EXISTS users CASCADE'); str += JSON.stringify(res.rows) + '\n';
 
 
         callback(str);
