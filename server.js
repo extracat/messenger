@@ -1,12 +1,16 @@
 // =======================
 // get the packages we need 
 // =======================
-
 var os          = require('os');
 var path        = require('path');
 var express     = require('express');
 var bodyParser  = require('body-parser');
 var jwt         = require('jsonwebtoken'); 
+
+
+
+var core        = require('./app/core.js'); // basic backend functions
+
 
 // =======================
 // Database 
@@ -14,6 +18,8 @@ var jwt         = require('jsonwebtoken');
 
 var model 			= require('./app/model.js'); 
 var setup       = require('./app/setup.js'); 
+
+
 
 
 // =======================
@@ -42,7 +48,7 @@ app.use(bodyParser.json());
 // socket.io 
 // =======================
 
-var allSockets = [];
+
 
 io.sockets
   .on('connection', socketioJwt.authorize({
@@ -54,15 +60,13 @@ io.sockets
     // this socket is authenticated, we are good to handle more events from it
     // ==============================================
 
+
+    if (core.userIsConnected(socket.decoded_token)) {return;} // Protect from multi authentication
+
     // add user to the connected users array
-    allSockets.push({socket: socket, userId: socket.decoded_token}); 
-    
-
-    // find an empty conversation for the user 
-    addUserToLonelyConversation(socket.decoded_token);
-
-
+    core.addSocket(socket, socket.decoded_token); 
     console.log('user authenticated: ' + socket.decoded_token);
+    console.log(core.getConnectedUsers());
 
 
 
@@ -96,7 +100,15 @@ io.sockets
 io.on('connection', function(socket){
   console.log('user connected');
   socket.on('disconnect', function(){
-    console.log('user disconnected');
+
+    if (socket.decoded_token === undefined) {
+        console.log('user disconnected');
+    }
+    else{
+        core.removeSocket(socket.decoded_token);
+        console.log('user disconnected:', socket.decoded_token);
+        console.log(core.getConnectedUsers());
+    }
   }); 
 });
 

@@ -50,10 +50,10 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     $("#connectBtn").click(function(){
-        if (!authenticated) {
-            socket.connect();
-            socket.emit('authenticate', {token: token});
-          }
+        
+        socket.connect();
+        socket.emit('authenticate', {token: token});
+          
     });
 });
 
