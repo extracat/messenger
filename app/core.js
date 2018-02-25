@@ -22,6 +22,17 @@ this.userIsConnected = function(userId) {
 	}
 }
 
+this.getSocket = function(userId) {
+
+	var found = this.allSockets.find(function(element){
+		return element.userId == userId;
+	});
+	
+	return found.socket;
+	
+}
+
+
 this.addSocket = function(socket, userId) {
 
 	if (!this.userIsConnected(socket.decoded_token)) {
@@ -44,6 +55,22 @@ this.getConnectedUsers = function(){
 	});
 	return users;
 };
+
+this.emitToUser = function(userId,type,data) { // emit to certain user
+	var socket = this.getSocket(userId);
+	socket.emit(type, data);
+};
+
+this.broadcast = function(userId,type,data) { // emit to all but the user
+
+	this.allSockets.forEach(function(item) {
+		if (item.userId != userId) {
+			item.socket.emit(type, data);
+		}
+	});
+
+};
+
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 //////////////////////////////////////////////

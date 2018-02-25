@@ -27,19 +27,20 @@ socket.on('disconnect', function () {
   $('#messages').append('<li>disconnected</li>');
 });
 
-socket.on('chatMessage', function(senderId, msg, convId){
-  conversationId = convId; 
+socket.on('message', function(msg){
+  
+  var senderId = msg.senderId;
   var color = (senderId == myUserId) ? 'green' : '#009afd';
   var from = senderId;
-  $('#messages').append('<li><b style="color:' + color + '">' + from + '</b>: ' + msg + '</li>');
+  $('#messages').append('<li><b style="color:' + color + '">' + from + '</b>: ' + msg.text + '</li>');
 });
 
-socket.on('notifyUser', function(user){
+socket.on('userTyping', function(user){
   var me = $('#user').val();
   if(user != me) {
-    $('#notifyUser').text(user + ' is typing ...');
+    $('#userTyping').text(user + ' is typing ...');
   }
-  setTimeout(function(){ $('#notifyUser').text(''); }, 10000);;
+  setTimeout(function(){ $('#userTyping').text(''); }, 1000);;
 });
 
 
@@ -86,7 +87,7 @@ function submitfunction(){
 
   var message = $('#m').val(); 
   if(message != '') {
-  socket.emit('chatMessage', myUserId, message, conversationId);
+  socket.emit('message', myUserId, message, conversationId);
 }
 
 $('#m').val('').focus();
@@ -94,7 +95,7 @@ $('#m').val('').focus();
 }
 function notifyTyping() { 
 
-  socket.emit('notifyUser', myUserId);
+  socket.emit('userTyping', myUserId);
 }
 
 $(document).ready(function(){
@@ -103,7 +104,7 @@ $(document).ready(function(){
 });
 
 
-function makeid() {
+function makeUserName() {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   for( var i=0; i < 5; i++ ) {

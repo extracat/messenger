@@ -69,27 +69,25 @@ io.sockets
     console.log(core.getConnectedUsers());
 
 
+    core.broadcast(socket.decoded_token,'message', {senderId: 'bot', text: 'User ' + socket.decoded_token + ' connected'});
+
+
 
     // Event, then message was sent to conversation
-    socket.on('chatMessage', function(from, msg, conversationId){
+    socket.on('message', function(from, msg, conversationId){
       console.log('server recieve msg:', socket.decoded_token, msg);
 
-      //addMessage(socket.decoded_token, conversationId, msg, function(message) {
 
-         
-        //notifyUsers(allSockets, message) // notifing all users in conversation
+      core.broadcast(socket.decoded_token, 'message', {senderId: socket.decoded_token, text: msg});
 
-        // tell user about conversation id
-        //socket.emit('chatMessage', null, null, message.conversationId);
-
-      //});
 
       
     });
     
 
-    socket.on('notifyUser', function(user){
-      io.emit('notifyUser', user);
+    socket.on('userTyping', function(user){
+      core.broadcast(socket.decoded_token,'userTyping', socket.decoded_token);
+
     });
 
 
@@ -106,6 +104,8 @@ io.on('connection', function(socket){
     }
     else{
         core.removeSocket(socket.decoded_token);
+        core.broadcast(socket.decoded_token,'message', {senderId: 'bot', text: 'User ' + socket.decoded_token + ' disconnected'});
+
         console.log('user disconnected:', socket.decoded_token);
         console.log(core.getConnectedUsers());
     }
