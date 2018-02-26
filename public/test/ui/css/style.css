@@ -186,8 +186,8 @@ canvas {
 }
 #floater-position {
   position: absolute;
-  right: 50px;
-  bottom: 90px;
+  right: 30px;
+  bottom: 80px;
   z-index: 70;
 }
 #chat-floater {
@@ -323,7 +323,7 @@ canvas {
   padding: 15px;
 }
 .card.menu.open {
-  width: 400px;
+  width: 300px;
   display: block;
 }
 .list-phone,
@@ -451,13 +451,13 @@ ul.list li.context i:hover {
 ul.list li.active {
   background: #f4f4f4;
 }
-ul.list li.active > .mdi-menu-down {
+ul.list li.active > .mdi-menu-right {
   opacity: 1;
 }
 ul.list li:hover {
   background: #f4f4f4;
 }
-ul.list li:hover > .mdi-menu-down {
+ul.list li:hover > .mdi-menu-right {
   opacity: 1;
 }
 ul.list li img {
@@ -495,7 +495,7 @@ ul.list li .time {
   font-size: 0.8em;
   margin: 13px 0 0 auto;
 }
-ul.list li .mdi-menu-down {
+ul.list li .mdi-menu-right {
   font-size: 1.5em;
   color: #676767;
   opacity: 0;
@@ -614,6 +614,6 @@ input:focus ~ .bar:after {
   width: 50%;
 }
 body {
-  font-family: 'Roboto';
+  font-family: sans-serif;
   background-size: cover;
 }

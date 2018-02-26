@@ -173,33 +173,7 @@
         }, 300);
     });
 
-    // список
-    // Делегирование для манипулирования дом. элементов списка
-    $('.list-account > .list').on('click', 'li', function() {
-        $(this).parent().children().removeClass('active');
-        $(this).parent().find('.context').remove();
-        $(this).addClass('active');
-        var $TARGET = $(this);
-        if (!$(this).next().hasClass('context')) {
-            var $ctx = $('<li class="context"><i class="mdi mdi-pencil"></i><i class="mdi mdi-delete"></i></li>');
 
-            $ctx.on('click', '.mdi-pencil', function() {
-                setModal('edit', $TARGET);
-
-                $('#contact-modal').one('click', '.btn.save', function() {
-                    $TARGET.find('.name').text($('#new-user').val());
-                    closeModal();
-                });
-            });
-
-            $ctx.on('click', '.mdi-delete', function() {
-                $TARGET.remove();
-            });
-
-
-            $(this).after($ctx);
-        }
-    });
 
     // Навигация
     $('.nav li').on('click', function() {
@@ -214,13 +188,11 @@
  
 
     // меню-клик!
-    $('#head .mdi-menu').unbind('click').on('click', function(event) {
-
+    //$('#head .mdi-menu').unbind('click').on('click', function(event) {
+    $('#head .mdi-menu').on('click', function(event) {
          $('.menu').toggleClass('open');
          $('.overlay').toggleClass('add');
-         console.log($('.menu'));
-         
-
+        
     });
 
 
