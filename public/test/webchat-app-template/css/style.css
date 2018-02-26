@@ -1,0 +1,682 @@
+ul, li, a, p, h1, h2, h3, h4, h5, h6, button, input, select {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    outline: none;
+}
+
+.btn, a {
+    transition: 400ms;
+}
+
+body {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #CFD8DC;
+}
+
+    body > content {
+        position: absolute;
+        top: 20px;
+        left: 20%;
+        right: 20%;
+        bottom: 20px;
+        color: #263238;
+        font-family: 'Roboto', sans-serif;
+        font-size: 17px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+        body > content::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 163px;
+            background: #37474F;
+            z-index: -1;
+        }
+
+        body > content > header {
+            position: absolute;
+            width: 100%;
+            height: 60px;
+            background: #607D8B;
+            box-shadow: inset 0 -1px rgba(255,255,255,0.1), 0 1px rgba(0,0,0,0.2);
+            z-index: 6;
+        }
+
+            body > content > header a {
+                position: absolute;
+                display: block;
+                color: #FFFFFF;
+                padding: 0 20px;
+                line-height: 60px;
+            }
+
+                body > content > header a h2 {
+                    font-weight: 100;
+                    font-size: 24px;
+                }
+
+                    body > content > header a h2 i {
+                        margin-right: 16px;
+                    }
+
+        body > content > main {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #ECEFF1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 1;
+        }
+
+            body > content > main > section {
+                position: relative;
+                width: 100%;
+                height: auto;
+                display: none;
+            }
+
+                body > content > main > section > nav {
+                    position: relative;
+                    width: 100%;
+                    height: auto;
+                    background: #607D8B;
+                    color: #ECEFF1;
+                    z-index: 2;
+                }
+
+                    body > content > main > section > nav ul {
+                        position: relative;
+                        display: table;
+                        width: 100%;
+                    }
+
+                        body > content > main > section > nav ul li {
+                            float: none;
+                            display: table-cell;
+                            width: 50%;
+                            text-align: center;
+                        }
+
+                            body > content > main > section > nav ul li a {
+                                display: block;
+                                width: 100%;
+                                height: 50px;
+                                line-height: 50px;
+                                color: #ECEFF1;
+                            }
+
+                                body > content > main > section > nav ul li a:hover {
+                                    background: #546E7A;
+                                }
+
+                    body > content > main > section > nav a.active {
+                        background: #49626d;
+                        box-shadow: inset 0 -3px #FFF;
+                    }
+
+                body > content > main > section > section {
+                    position: relative;
+                    width: 100%;
+                    height: auto;
+                    text-align: left;
+                    box-sizing: border-box;
+                    display: none;
+                    z-index: 1;
+                }
+
+                    body > content > main > section > section table {
+                        position: relative;
+                        width: 100%;
+                    }
+
+                    body > content > main > section > section thead {
+                        background: #CFD8DC;
+                        color: #546E7A !important;
+                    }
+
+                        body > content > main > section > section thead th {
+                            display: inline-block;
+                            padding: 8px 16px;
+                            font-size: 14px;
+                            font-weight: 300;
+                        }
+
+                            body > content > main > section > section thead th i {
+                                margin-right: 12px;
+                            }
+
+                    body > content > main > section > section tbody tr {
+                        display: block;
+                        transition: 400ms;
+                        cursor: pointer;
+                    }
+
+                        body > content > main > section > section tbody tr:hover {
+                            background: rgba(0,0,0,0.05);
+                        }
+
+                    body > content > main > section > section tbody td {
+                        display: inline-block;
+                        padding: 10px 16px;
+                    }
+
+                        body > content > main > section > section tbody td img {
+                            width: 48px;
+                            border: 2px #FFFFFF solid;
+                            border-radius: 100%;
+                            background: #FFF;
+                            box-shadow: 0 1px rgba(0,0,0,0.1);
+                        }
+
+                        body > content > main > section > section tbody td p {
+                            width: 600px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
+
+                            body > content > main > section > section tbody td p small {
+                                color: #AAA;
+                            }
+
+
+@media screen and (max-width: 1200px) {
+    body > content {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+}
+
+
+@media screen and (max-width: 750px) {
+    body > content > main > section > section tbody td p {
+        width: 300px;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    body > content > main > section > section tbody td p {
+        width: 200px;
+    }
+}
+
+@media screen and (max-width: 350px) {
+    body > content > main > section > section tbody td p {
+        width: 150px;
+    }
+}
+
+body > content > main > section#sw-index {
+    display: block;
+}
+
+body > content > main > section#sw-messages {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+    body > content > main > section#sw-messages header {
+        position: relative;
+        width: 100%;
+        height: 50px;
+        background: #607D8B;
+        color: #ECEFF1;
+        z-index: 2;
+    }
+
+        body > content > main > section#sw-messages header a {
+            position: absolute;
+            display: block;
+            color: #FFFFFF;
+            line-height: 50px;
+            text-align: center;
+        }
+
+            body > content > main > section#sw-messages header a i {
+                width: 16px;
+                padding: 0 20px;
+            }
+
+    body > content > main > section#sw-messages content {
+        position: absolute;
+        top: 50px;
+        left: 0;
+        right: 0;
+        bottom: 80px;
+        padding: 20px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+        body > content > main > section#sw-messages content .sw-message-line {
+            position: relative;
+            width: 100%;
+            height: auto;
+            white-space: nowrap;
+            margin-bottom: 10px;
+        }
+
+            body > content > main > section#sw-messages content .sw-message-line .sw-message-box {
+                display: inline-flex;
+                font-size: 16px;
+            }
+
+            body > content > main > section#sw-messages content .sw-message-line .sw-message-photo {
+                position: relative;
+                width: 50px;
+                height: 50px;
+                background-image: url('https://levelhard1.websiteseguro.com/jobs/jobs/sw_speechless/img/user-message.svg');
+                background-color: #CFD8DC;
+                background-repeat: no-repeat;
+                background-size: 60%;
+                background-position: center;
+                z-index: 2;
+            }
+
+            body > content > main > section#sw-messages content .sw-message-line .sw-message-content {
+                position: relative;
+                max-width: 600px;
+                max-height: none;
+                background: #FFF;
+                box-shadow: 0 1px rgba(0,0,0,0.1);
+                z-index: 1;
+            }
+
+                body > content > main > section#sw-messages content .sw-message-line .sw-message-content div {
+                    display: block;
+                }
+
+                body > content > main > section#sw-messages content .sw-message-line .sw-message-content .sw-message-user {
+                    position: relative;
+                    font-size: 13px;
+                    padding-bottom: 5px;
+                    color: #B0BEC5;
+                }
+
+                body > content > main > section#sw-messages content .sw-message-line .sw-message-content .sw-message-text {
+                    position: relative;
+                    min-width: 100px;
+                    min-height: 25px;
+                    padding: 10px 0;
+                    color: #607D8B;
+                }
+
+                body > content > main > section#sw-messages content .sw-message-line .sw-message-content .sw-message-info {
+                    position: relative;
+                    font-size: 10px;
+                    color: #B0BEC5;
+                }
+
+.sw-message-align-left {
+    text-align: left;
+}
+
+    .sw-message-align-left .sw-message-box {
+        flex-direction: row;
+    }
+
+        .sw-message-align-left .sw-message-box .sw-message-photo {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+
+            .sw-message-align-left .sw-message-box .sw-message-photo:before {
+                content: "";
+                position: absolute;
+                right: 0;
+                width: 0;
+                height: 0;
+                border-top: 10px solid transparent;
+                border-bottom: 10px solid transparent;
+                border-right: 10px solid #FFFFFF;
+                display: inline-block;
+            }
+
+        .sw-message-align-left .sw-message-box .sw-message-content {
+            padding: 8px;
+            border-top-right-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+            .sw-message-align-left .sw-message-box .sw-message-content .sw-message-info {
+                text-align: right;
+            }
+
+.sw-message-align-right {
+    text-align: right;
+}
+
+    .sw-message-align-right .sw-message-box {
+        flex-direction: row-reverse;
+    }
+
+        .sw-message-align-right .sw-message-box .sw-message-photo {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+
+            .sw-message-align-right .sw-message-box .sw-message-photo:before {
+                content: "";
+                position: absolute;
+                left: 0;
+                width: 0;
+                height: 0;
+                border-top: 10px solid transparent;
+                border-bottom: 10px solid transparent;
+                border-left: 10px solid #FFFFFF;
+                display: inline-block;
+            }
+
+        .sw-message-align-right .sw-message-box .sw-message-content {
+            padding: 8px;
+            border-top-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            text-align: left;
+        }
+
+            .sw-message-align-right .sw-message-box .sw-message-content .sw-message-info {
+                text-align: right;
+            }
+
+@media screen and (max-width: 450px) {
+    body > content > main > section#sw-messages content {
+        padding: 10px;
+    }
+}
+
+body > content > main > section#sw-messages footer {
+    position: absolute;
+    width: 100%;
+    height: 80px;
+    bottom: 0;
+}
+
+    body > content > main > section#sw-messages footer form {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    body > content > main > section#sw-messages footer input {
+        width: 100%;
+        height: 100%;
+        border: none;
+        padding: 16px 70px 16px 70px;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        box-sizing: border-box;
+    }
+
+    body > content > main > section#sw-messages footer button {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        color: #CFD8DC;
+        border: none;
+        background: none;
+        transition: 400ms;
+    }
+
+        body > content > main > section#sw-messages footer button:hover {
+            color: #90A4AE;
+        }
+
+        body > content > main > section#sw-messages footer button[name=message-emoji] {
+            top: 15px;
+            left: 15px;
+        }
+
+        body > content > main > section#sw-messages footer button[name=message-send] {
+            top: 15px;
+            right: 15px;
+        }
+
+body > content > footer {
+    position: absolute;
+    width: 100%;
+    height: 60px;
+    background: #607D8B;
+    color: #ECEFF1;
+    bottom: 0;
+    display: none;
+    z-index: 2;
+}
+
+body > content > nav {
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+    width: 400px;
+    background: #FFFFFF;
+    transform: translateX(-10%);
+    opacity: 0;
+    display: none;
+    z-index: 5;
+}
+
+    body > content > nav ul {
+        position: absolute;
+        top: 200px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    body > content > nav a {
+        display: block;
+        padding: 20px 16px;
+        color: #546E7A;
+    }
+
+        body > content > nav a:hover {
+            background: #ECEFF1;
+        }
+
+        body > content > nav a i {
+            width: 30px;
+            text-align: center;
+            margin-right: 18px;
+        }
+
+    body > content > nav > header {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        background-image: url('https://levelhard1.websiteseguro.com/jobs/jobs/sw_speechless/img/user-bg.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center bottom;
+        box-shadow: inset 0 -70px rgba(0,0,0,0.2);
+    }
+
+        body > content > nav > header img {
+            position: relative;
+            width: 80px;
+            background: #FFF;
+            border-radius: 100%;
+            margin: 25px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+        }
+
+        body > content > nav > header p {
+            color: #FFF;
+            width: 350px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 10px 16px;
+        }
+
+@media screen and (max-width: 440px) {
+    body > content > nav {
+        width: 100%;
+        box-shadow: none;
+    }
+}
+
+/* Default Modal */
+.modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.1));
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: none;
+    z-index: 900;
+}
+
+    .modal > .modal-box {
+        display: table;
+        height: 100%;
+        margin: 0 auto;
+        padding: 20px;
+        overflow: hidden;
+    }
+
+        .modal > .modal-box > .modal-content {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+            .modal > .modal-box > .modal-content > content {
+                display: block;
+                width: 600px;
+                height: auto;
+                border-radius: 4px;
+                background: #FFFFFF;
+                box-shadow: 0 20px 25px rgba(0,0,0,0.2);
+            }
+
+                .modal > .modal-box > .modal-content > content > header {
+                    position: relative;
+                    width: 100%;
+                    height: auto;
+                    box-sizing: border-box;
+                    padding: 16px;
+                }
+
+                .modal > .modal-box > .modal-content > content > main {
+                    position: relative;
+                    width: 100%;
+                    min-height: 100px;
+                    padding: 16px;
+                    box-sizing: border-box;
+                }
+
+                .modal > .modal-box > .modal-content > content > footer {
+                    position: relative;
+                    width: 100%;
+                    height: auto;
+                    text-align: right;
+                    padding: 11px;
+                    box-sizing: border-box;
+                }
+
+@media screen and (max-width: 640px) {
+    .modal > .modal-box > .modal-content > content {
+        width: 400px;
+    }
+}
+
+@media screen and (max-width: 440px) {
+    .modal > .modal-box > .modal-content > content {
+        width: 300px;
+    }
+}
+
+@media screen and (max-width: 340px) {
+    .modal > .modal-box > .modal-content > content {
+        width: 200px;
+    }
+}
+
+/* Padronizacao de Layout */
+preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.1));
+    z-index: 9998;
+    display: none;
+}
+
+    preloader img {
+        position: absolute;
+        width: 100px;
+        top: 50%;
+        left: 50%;
+        margin: -50px 0 0 -50px;
+    }
+
+.btn {
+    position: relative;
+    border: none;
+    background: none;
+    padding: 8px 16px;
+    border-radius: 3px;
+    margin: 5px;
+}
+
+.btn-link {
+    color: #0288D1;
+}
+
+.btn-success {
+    color: #FFF;
+    background: #607D8B;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+    .btn-success:hover {
+        background: #6d8b9a;
+    }
+
+    .btn-success:active {
+        background: #58717e;
+    }
+
+.btn-danger {
+    color: #FFF;
+    background: #F44336;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+    .btn-danger:hover {
+        background: #ff6d62;
+    }
+
+    .btn-danger:active {
+        background: #d53c30;
+    }
+
+.sw-user-online {
+    box-shadow: inset 5px 0 #009688;
+}
+
+.sw-user-occupied {
+    box-shadow: inset 5px 0 #F44336;
+}
