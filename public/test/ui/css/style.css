@@ -263,7 +263,7 @@ canvas {
   width: 350px;
   height: 200px;
   padding: 20px;
-  margin: auto;
+  margin: 90px auto auto auto;
   position: absolute;
   top: 0;
   left: 0;
