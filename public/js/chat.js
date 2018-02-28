@@ -55,6 +55,7 @@ socket.on('disconnect', function () {
   authenticated = false;
   //$('#messages').append('<li>disconnected</li>');
   console.log('disconnected\n');
+  //socket.connect();
 });
 
 socket.on('message', function(msg){
@@ -65,6 +66,11 @@ socket.on('message', function(msg){
   $('#messages').append('<li><b style="color:' + color + '">' + from + '</b>: ' + msg.text + '</li>');
 });
 
+socket.on('onlineUsers', function(list){
+  
+ console.log(list + '\n');
+});
+
 socket.on('userTyping', function(user){
   var me = $('#user').val();
   if(user != me) {
@@ -72,6 +78,7 @@ socket.on('userTyping', function(user){
   }
   setTimeout(function(){ $('#userTyping').text(''); }, 1000);;
 });
+
 
 /*
 $(document).ready(function(){
@@ -97,7 +104,7 @@ $(document).ready(function(){
 */
 
 function signUp() {
-    socket.disconnect();
+    //socket.disconnect();
     $.ajax({
         url: "api/signup",
         contentType: "application/json",

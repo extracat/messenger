@@ -68,9 +68,15 @@ io.sockets
     console.log('user authenticated: ' + socket.decoded_token);
     console.log(core.getConnectedUsers());
 
+/////////////////////// Some job after 
+/////////////////////// user has connected
 
     core.broadcast(socket.decoded_token,'message', {senderId: 'bot', text: 'User ' + socket.decoded_token + ' connected'});
 
+    core.emitToUser(socket.decoded_token,'onlineUsers',core.getConnectedUsers());
+
+///////////////////////
+///////////////////////
 
 
     // Event, then message was sent to conversation
