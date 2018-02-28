@@ -240,8 +240,14 @@
             $(this).addClass('active');
             setModal('add');
             $('#contact-modal').one('click', '.btn.save', function() {
-                $('.list-account > .list').prepend('<li><img src="userpic.jpg"><span class="name">' + $('#new-user').val() + '</span><i class="mdi mdi-menu-right"></i></li>');
+                addUserToList($('#new-user').val());
                 closeModal();
             });
         }
     });
+
+function addUserToList(name) {
+
+   $('.list-account > .list').prepend('<li><img src="userpic.jpg"><span class="name">' + name + '</span><i class="mdi mdi-menu-right"></i></li>');
+ 
+}

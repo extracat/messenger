@@ -38,7 +38,9 @@ socket.on('connect', function () {
 socket.on('authenticated', function () {
   authenticated = true;
   //$('#messages').append('<li>authenticated</li>');
+
   console.log('authenticated\n');
+
 });
 
 socket.on('authorized', function () {
@@ -67,7 +69,11 @@ socket.on('message', function(msg){
 });
 
 socket.on('onlineUsers', function(list){
-  
+  list.forEach(function(item) {
+    if (item != myUserId) {
+      addUserToList('User ' + item);
+    }
+  });
  console.log(list + '\n');
 });
 
@@ -125,7 +131,23 @@ function signUp() {
     })
 }
 
+function getMyUserData(token) {
 
+    $.ajax({
+        url: "api",
+        contentType: "application/json",
+        method: "GET",
+        headers: {"x-access-token": token},
+        success: function (user) {
+
+            myUserId = user.id;
+
+            setName("My ID: " + myUserId);
+
+            console.log('myUserId = ' + myUserId + '\n');
+        }
+    })
+}
 
 function submitfunction(){
 

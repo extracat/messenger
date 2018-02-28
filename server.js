@@ -73,7 +73,7 @@ io.sockets
 
     core.broadcast(socket.decoded_token,'message', {senderId: 'bot', text: 'User ' + socket.decoded_token + ' connected'});
 
-    core.emitToUser(socket.decoded_token,'onlineUsers',core.getConnectedUsers());
+    core.emitToUser(socket.decoded_token,'onlineUsers',core.getConnectedUsersExceptId(socket.decoded_token));
 
 ///////////////////////
 ///////////////////////

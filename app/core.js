@@ -56,6 +56,16 @@ this.getConnectedUsers = function(){
 	return users;
 };
 
+this.getConnectedUsersExceptId = function(id){
+	var users = [];
+	this.allSockets.forEach(function(item) {
+		if (item.userId != id) {
+			users.push(item.userId);
+		}
+	});
+	return users;
+};
+
 this.emitToUser = function(userId,type,data) { // emit to certain user
 	var socket = this.getSocket(userId);
 	socket.emit(type, data);
