@@ -15,10 +15,13 @@ socket.on('connect', function () {
   var result = hash.split('&').reduce(function (result, item) {
     var parts = item.split('=');
     result[parts[0]] = parts[1];
+    //result[parts[1]] = parts[2];
     return result;
   }, {});
 
+
   var hash_token = result.token;
+
   
 
   // Если там нет токена - пытаемся зарегистрироваться
@@ -27,6 +30,9 @@ socket.on('connect', function () {
   } 
   else { // если есть - логинимся с ним
       token = hash_token;
+      myUserId = result.myId;
+      setName("My ID: " + myUserId);
+
       socket.connect();
       socket.emit('authenticate', {token: token});
       console.log('token = ' + token + '\n');
@@ -55,6 +61,7 @@ socket.on('unauthorized', function (msg) {
 
 socket.on('disconnect', function () {
   authenticated = false;
+  $('.list-account > .list').empty();
   //$('#messages').append('<li>disconnected</li>');
   console.log('disconnected\n');
   //socket.connect();
@@ -68,14 +75,28 @@ socket.on('message', function(msg){
   $('#messages').append('<li><b style="color:' + color + '">' + from + '</b>: ' + msg.text + '</li>');
 });
 
+socket.on('userStatus', function(data){
+    var userId = data.userId;
+    var status = data.status;
+    if (status == 'online') {
+      addUserToList('User ' + userId, userId);
+    }
+    if (status == 'offline') {
+      $('#userId_' + userId).remove();
+    }
+    console.log('User ' + userId + ' ' + status + '\n');
+});
+
+
 socket.on('onlineUsers', function(list){
   list.forEach(function(item) {
     if (item != myUserId) {
-      addUserToList('User ' + item);
+      addUserToList('User ' + item, item);
     }
   });
  console.log(list + '\n');
 });
+
 
 socket.on('userTyping', function(user){
   var me = $('#user').val();
@@ -122,7 +143,7 @@ function signUp() {
             myUserId = user.id;
 
             setName("My ID: " + myUserId);
-            insertParam('token', token);
+            insertParam(token,myUserId);
 
             socket.connect();
             socket.emit('authenticate', {token: token});
@@ -171,9 +192,9 @@ $(document).ready(function(){
 
 
 // Установка параметров ULR после "#"
-function insertParam(key, value) 
+function insertParam(token, myId) 
 {
-    window.location.hash = key + "=" + value;
+    window.location.hash = "token=" + token + "&myId=" + myId;
 }
 
 

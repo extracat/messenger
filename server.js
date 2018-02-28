@@ -72,8 +72,11 @@ io.sockets
 /////////////////////// user has connected
 
     core.broadcast(socket.decoded_token,'message', {senderId: 'bot', text: 'User ' + socket.decoded_token + ' connected'});
+    core.broadcast(socket.decoded_token,'userStatus', {userId: socket.decoded_token, status: 'online'});
 
     core.emitToUser(socket.decoded_token,'onlineUsers',core.getConnectedUsersExceptId(socket.decoded_token));
+   
+
 
 ///////////////////////
 ///////////////////////
@@ -111,6 +114,8 @@ io.on('connection', function(socket){
     else{
         core.removeSocket(socket.decoded_token);
         core.broadcast(socket.decoded_token,'message', {senderId: 'bot', text: 'User ' + socket.decoded_token + ' disconnected'});
+        core.broadcast(socket.decoded_token,'userStatus', {userId: socket.decoded_token, status: 'offline'});
+
 
         console.log('user disconnected:', socket.decoded_token);
         console.log(core.getConnectedUsers());

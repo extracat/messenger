@@ -50,18 +50,11 @@
         }, 530)
     });
 
-    // Имя набора (пользователя)
-    setName(localStorage.getItem('username'));
 
-    // Dyncolor ftw
-    if (localStorage.getItem('color') !== null) {
-        var colorarray = JSON.parse(localStorage.getItem('color'));
-        stylechange(colorarray);
-    } else {
-        var colorarray = [51,102,153,1]; // 15 157 88 = #0f9d58
-        localStorage.setItem('color', JSON.stringify(colorarray));
-        stylechange(colorarray);
-    }
+    var colorarray = [51,102,153,1]; // 15 157 88 = #0f9d58
+    localStorage.setItem('color', JSON.stringify(colorarray));
+    stylechange(colorarray);
+    
 
     // Помощики
     function setName(name) {
@@ -230,6 +223,7 @@
 
     });
 
+/*
     $('#add-contact-floater').on('click', function() {
         if ($(this).hasClass('active')) {
             	closeModal();
@@ -246,8 +240,11 @@
         }
     });
 
-function addUserToList(name) {
+*/
 
-   $('.list-account > .list').prepend('<li><img src="userpic.jpg"><span class="name">' + name + '</span><i class="mdi mdi-menu-right"></i></li>');
+
+function addUserToList(name, id) {
+
+   $('.list-account > .list').prepend('<li id="userId_' + id + '"><img src="userpic.jpg"><span class="name">' + name + '</span><i class="mdi mdi-menu-right"></i></li>');
  
 }
