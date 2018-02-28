@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Chat Application</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel='stylesheet' href='css/style.css' type='text/css'/>
+    <link rel='stylesheet' href='css/bootstrap.css' type='text/css'/>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+          <div class="col-4">
+            <div class="col-3" style="background-color: #222222; position: fixed; top: 0;  ">
+              <p style="padding-top: 20px"> 
+               <button class="btn btn-secondary" type="button" id="signUpBtn">Sign up new user</button>
+              </p>
+
+              <p style="padding-top: 20px"> 
+               <button class="btn btn-secondary" type="button" id="connectBtn">Authenticate</button>
+              </p>
+
+              <p style="padding-top: 20px"> 
+               <button class="btn btn-secondary" type="button" id="disconnectBtn">Disconnect</button>
+              </p>
+            <h2>Users</h2>
+            <ul id="users"></ul>
+          </div>
+          </div>
+          <div class="col-8"><h2>Conversation</h2>
+
+            <ul id="messages"></ul>
+            <span id="userTyping"></span>
+
+              <form class="form-inline" style="width: 60%" id="form" action="" onsubmit="return submitfunction();">
+              <input type="hidden" id="user" value="" />
+                <div class="input-group col-8" style="margin-left: 100px">
+                  <input type="text" class="form-control" style="width: 70%;" id="m" autocomplete="off" onkeyup="notifyTyping();" placeholder="Type yor message here.." />
+                  <span class="input-group-btn">
+                    <button class="btn btn-secondary" type="submit" id="button">Send</button>
+                  </span>
+                </div>
+
+
+              </form>
+
+           
+            
+            </div>
+
+      </div>
+    </div>
+  </body>
+</html>

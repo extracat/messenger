@@ -1,0 +1,7 @@
+
+form { position: fixed; bottom: 0; display: inline; }
+
+#messages { list-style-type: none; margin-bottom: 50px; margin-left:0; padding-left: 0   }
+#messages li { margin-left:0; padding-left: 0  }
+#messages li:nth-child(odd) {  }
+#userTyping { position: fixed; bottom: 42px;  }
