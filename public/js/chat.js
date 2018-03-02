@@ -68,11 +68,7 @@ socket.on('disconnect', function () {
 });
 
 socket.on('message', function(msg){
-  
-  var senderId = msg.senderId;
-  var color = (senderId == myUserId) ? 'green' : '#009afd';
-  var from = senderId;
-  $('#messages').append('<li><b style="color:' + color + '">' + from + '</b>: ' + msg.text + '</li>');
+  addMessageToChat(msg.senderId, msg.text);
 });
 
 socket.on('userStatus', function(data){
@@ -170,14 +166,12 @@ function getMyUserData(token) {
     })
 }
 
-function submitfunction(){
+function sendMessageButton(message){
 
-  var message = $('#m').val(); 
   if(message != '') {
-  socket.emit('message', myUserId, message, conversationId);
-}
-
-$('#m').val('').focus();
+      socket.emit('message', myUserId, message, conversationId);
+  }
+  $('#m').val('').focus();
   return false;
 }
 function notifyTyping() { 

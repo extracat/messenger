@@ -1,6 +1,7 @@
    // первый маршрут,для показа
     var GLOBALSTATE = {
-        route: '.list-account'
+        //route: '.list-account'
+        route: '.list-chat'
     };
 
     // Установка первого маршрута
@@ -135,16 +136,29 @@
     }
 
 
-
-
+    function addMessageToChat(from, message) 
+    {
+        var chatmessage = '<li class="inMsg"><img src="userpic.jpg"><div class="message">'+from+':<br/>'+message+'</div></li>'
+        $('ul.chat').append(chatmessage);
+        scrollChat();
+    }
 
 
 
     $('.mdi-send').on('click', function() {
-        var $chatmessage = '<p>' + $('.chat-input').val() + '</p>';
-        $('ul.chat > li > .current').append($chatmessage);
-        $('.chat-input').val('');
+        var message = $('.chat-input').val();
+        if(message != '') {
+            sendMessageButton(message);
+            var chatmessage = '<li class="outMsg"><img src="userpic.jpg"><div class="message">'+message+'</div></li>'
+            $('ul.chat').append(chatmessage);
+            scrollChat();
+            $('.chat-input').val('');
+        }
     });
+
+    function scrollChat(){
+       $('#hangout .list-chat').animate({scrollTop: $("#last").offset().top}, 0)
+    }
 
     $('.chat-input').on('keyup', function(event) {
         event.preventDefault();
