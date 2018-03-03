@@ -17,6 +17,7 @@
   <div id="content">
     <div class="overlay"></div>
     
+
     <div id="floater-position">
       <div id="add-contact-floater" class="floater control style-bg hidden"><i class="mdi mdi-plus"></i></div>          
       <div id="chat-floater" class="floater control style-bg hidden"><i class="mdi mdi-comment-text-outline"></i></div>   
@@ -42,7 +43,7 @@
     </div>
     <div class="list-text">
     <ul class="list mat-ripple">      
-      <li><img src="userpic.jpg">
+      <li id="ChatID"><img src="userpic.jpg">
         <div class="content-container">
           <span class="name">Global Chat</span>
           <span class="txt">All users</span>
@@ -69,12 +70,16 @@
  
     </ul> 
     </div>
+
+
+
     <div class="list-chat">
+      <div id="chat-window">
       <ul class="chat">
 
       </ul>
-      <div id="last"></div>
-
+      <div id="chat-window-last"></div>
+      </div>
 
       <div class="meta-bar chat"><input class="nostyle chat-input" type="text" placeholder="Message..." /> <i class="mdi mdi-send"></i></div>
     </div>
@@ -84,6 +89,8 @@
       <li data-route=".list-account"><i class="mdi mdi-account-multiple"></i></li><li data-route=".list-text"><i class="mdi mdi-comment-text"></i></li><li data-route=".list-phone"><i class="mdi mdi-phone"></i></li></ul>
 
     </div>  
+
+
   
   <div id="contact-modal" data-mode="add" class="card dialog">
     <h3>Add Contact</h3>

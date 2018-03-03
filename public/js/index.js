@@ -61,9 +61,16 @@
     function setName(name) {
         $.trim(name) === '' || $.trim(name) === null ? name = 'Name' : name = name;
         $('h1').text(name);
-        localStorage.setItem('username', name);
+        //localStorage.setItem('username', name);
         $('#username').val(name).addClass('used');
         $('.card.menu > .header > h3').text(name);
+    }
+
+
+    // Помощики
+    function setH1(name) {
+        $.trim(name) === '' || $.trim(name) === null ? name = 'Name' : name = name;
+        $('h1').text(name);
     }
 
     // Стиль смены
@@ -157,7 +164,12 @@
     });
 
     function scrollChat(){
-       $('#hangout .list-chat').animate({scrollTop: $("#last").offset().top}, 0)
+        var myElement = document.getElementById('chat-window-last');
+        var topPos = myElement.offsetTop;
+
+        document.getElementById('chat-window').scrollTop = topPos;    
+
+        //$('#chat-window').animate({scrollTop: $("#chat-window-last").offset().top}, 0)
     }
 
     $('.chat-input').on('keyup', function(event) {
@@ -176,6 +188,7 @@
 
             $('.list-chat').addClass('shown');
             setRoute('.list-chat');
+            setH1($('.list-chat li div span.name').val());
             $('.chat-input').focus();
         }, 300);
     });

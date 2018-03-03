@@ -342,8 +342,7 @@ canvas {
   animation: fade 0.444s 1 ease-out;
   animation-fill-mode: alternate;
   height: 100%;
-  padding-bottom: 100px;
-  overflow-y: auto;
+
 
 }
 .list-phone .meta-bar,
@@ -370,6 +369,13 @@ canvas {
 .list-chat.shown {
   animation: fade-up 0.444s 1 ease-out;
 }
+#chat-window {
+  width: 100%;
+  height: 100%;
+  padding-bottom: 100px;
+  overflow-y: auto;
+}
+
 ul.chat {
   width: 100%;
 }
