@@ -1,12 +1,13 @@
    // первый маршрут,для показа
     var GLOBALSTATE = {
         //route: '.list-account'
-        route: '.list-chat'
+        route: '.list-text'
     };
 
     // Установка первого маршрута
     setRoute(GLOBALSTATE.route);
     $('.nav > li[data-route="' + GLOBALSTATE.route + '"]').addClass('active');
+
 
     // Волновый эффект
     $('.floater').on('click', function(event) {
@@ -59,8 +60,7 @@
 
     // Помощики
     function setName(name) {
-        $.trim(name) === '' || $.trim(name) === null ? name = 'Name' : name = name;
-        $('h1').text(name);
+        setH1(name);
         //localStorage.setItem('username', name);
         $('#username').val(name).addClass('used');
         $('.card.menu > .header > h3').text(name);
@@ -135,6 +135,7 @@
             $('#content').addClass('chat');
             $('.nav').hide();
         } else {
+            setH1("My ID: " + myUserId);
             $('#content').removeClass('chat');
             $('.mdi-menu').show();
             $('.mdi-arrow-left').hide();
@@ -181,14 +182,13 @@
 
     $('.list-text > ul > li').on('click', function() {
         $('ul.chat > li').eq(1).html('<img src="' + $(this).find('img').prop('src') + '"><div class="message"><p>' + $(this).find('.txt').text() + '</p></div>');
+        setH1($(this).find('.name').text());
 
         // timeout just for eyecandy...
         setTimeout(function() {
             $('.shown').removeClass('shown');
-
             $('.list-chat').addClass('shown');
             setRoute('.list-chat');
-            setH1($('.list-chat li div span.name').val());
             $('.chat-input').focus();
         }, 300);
     });
